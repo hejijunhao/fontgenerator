@@ -1,0 +1,33 @@
+# dependencies
+node_modules/
+
+# build
+dist/
+dist-ssr/
+
+# vite / typescript
+*.local
+node_modules/.tmp/
+
+# env
+.env
+.env.*
+!.env.example
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+
+# vercel
+.vercel
+
+# cli reference intermediates
+scripts/cli-reference/work/

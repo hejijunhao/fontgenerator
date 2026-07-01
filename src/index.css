@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --color-cream: #f1efe2;
+  --color-ink: #1a1a18;
+}
+
+body {
+  @apply min-h-dvh bg-cream text-ink antialiased;
+}

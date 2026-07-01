@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "source": "A-KaminoDeco.png",
+  "preprocess": {
+    "threshold": 0.6,
+    "close": 1,
+    "invert": false,
+    "horizontalCropOnly": true
+  },
+  "trace": {
+    "turdsize": 2,
+    "alphamax": 1.0,
+    "opttolerance": 0.2
+  },
+  "place": {
+    "unitsPerEm": 1000,
+    "baselineFraction": 0.754385,
+    "baselinePixelRow": 946,
+    "baselineRationale": "Bottom ink row (foot line) in full 1254px canvas; maps to font y=0"
+  },
+  "metrics": {
+    "leftBearing": 40,
+    "rightBearing": 40,
+    "advanceWidth": 654,
+    "capHeight": 451,
+    "notdefWidth": 600,
+    "spaceWidth": 250,
+    "advanceFormula": "round(bitmapWidth * unitsPerEm / canvasHeight) + leftBearing + rightBearing"
+  },
+  "fontMeta": {
+    "family": "KaminoDeco",
+    "style": "Regular"
+  },
+  "inkBounds": {
+    "left": 267,
+    "right": 986,
+    "top": 238,
+    "bottom": 946,
+    "width": 720,
+    "height": 709
+  },
+  "canvas": {
+    "width": 1254,
+    "height": 1254,
+    "bitmapWidth": 720,
+    "bitmapHeight": 1254
+  }
+}
