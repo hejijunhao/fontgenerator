@@ -55,21 +55,19 @@ export function DropZone() {
         'flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed px-8 py-16 text-center transition-colors',
         isBusy ? 'cursor-not-allowed opacity-60' : '',
         isDragging
-          ? 'border-ink/50 bg-white/70'
-          : 'border-ink/20 bg-white/40 hover:border-ink/35 hover:bg-white/55',
+          ? 'border-border-strong bg-surface-hover'
+          : 'border-border-strong bg-surface-muted hover:border-subtle hover:bg-surface',
       ].join(' ')}
     >
-      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-ink/5 text-2xl">
+      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-surface-strong text-2xl shadow-sm ring-1 ring-border">
         A
       </div>
       <div className="space-y-1">
         <p className="text-lg font-medium">Drop PNG glyphs here</p>
-        <p className="text-sm text-ink/60">
-          One or more letters — batch fonts assemble at export
-        </p>
+        <p className="text-sm text-muted">One or more letters — batch fonts assemble at export</p>
       </div>
       {glyphs.length > 0 && (
-        <p className="text-sm font-medium text-ink/80">
+        <p className="text-sm font-medium text-subtle">
           {glyphs.length} PNG{glyphs.length === 1 ? '' : 's'} ready
         </p>
       )}

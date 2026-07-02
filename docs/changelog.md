@@ -1,13 +1,62 @@
 # Changelog
 
-All notable changes to Font Generator are documented here. The format is based on
+All notable changes to Glyphmill are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Index
 
+- **[0.2.0](#020--2026-07-02)** — Glyphmill rebrand, light/dark mode, polished UI shell
 - **[0.1.1](#011--2026-07-02)** — CI hardening, lint fixes, repo hygiene
 - **[0.1.0](#010--2026-07-01)** — Initial v1: browser PNG → font pipeline with optional agent
+
+---
+
+## [0.2.0] — 2026-07-02
+
+Product identity and UI polish — rebrand to **Glyphmill**, add light/dark mode, and ship a
+minimalist app shell that reads as a real tool rather than a scaffold.
+
+### Why
+
+The v1 pipeline worked but the surface still said "Font Generator" and looked like an internal
+demo. This release establishes the public product name, gives users a theme they can control,
+and unifies visual language across every panel so the app feels deploy-ready on Vercel.
+
+### Added
+
+- **`AppHeader`** (`src/components/AppHeader.tsx`) — full-width minimalist header with glyph
+  mark, wide-tracked **GLYPHMILL** wordmark, tagline, and theme toggle
+- **`ThemeToggle`** (`src/components/ThemeToggle.tsx`) — sun/moon control in the header
+- **`useTheme`** (`src/hooks/useTheme.ts`) — React hook for theme state and persistence
+- **Theme utilities** (`src/lib/theme.ts`) — `initTheme`, `applyTheme`, `persistTheme`,
+  `toggleTheme`; storage key `glyphmill-theme`
+- **Design token system** (`src/index.css`) — semantic Tailwind colors (`canvas`, `surface`,
+  `ink`, `accent`, `muted`, `border`, `preview`, …) with `html.dark` overrides; shared
+  component classes (`.panel`, `.btn-primary`, `.btn-secondary`, `.btn-ghost`, `.field-input`)
+- **Flash prevention** — inline script in `index.html` applies theme class before React paint
+- **Inter font** — loaded via Google Fonts in `index.html`
+
+### Changed
+
+- **Rebrand** — product name **Glyphmill** across UI title, OpenRouter `appName`
+  (`src/agent/provider.ts`), and README
+- **`App.tsx`** — new layout: sticky header + constrained main column; old inline header
+  removed; buttons use shared `.btn-*` classes; footer tightened
+- **`index.html`** — `<title>`, meta description, and theme bootstrap script updated
+- **All UI components** — migrated from hard-coded `bg-white/…` and `text-ink/…` opacity
+  classes to semantic tokens so light and dark modes stay consistent:
+  - `DropZone`, `GlyphGrid`, `AgentSettings`, `ExportPanel`, `PreviewPanel`, `ProgressSteps`,
+    `RunView`, `PartialFontWarning`, `Gate1Panel`, `Gate2Panel`
+- **Gate panels** — amber (Gate 1) and emerald (Gate 2) accents kept; added `dark:` variants
+  for borders, backgrounds, and text so approval flows remain readable at night
+- **README** — rewritten for Glyphmill branding; documents light/dark mode, BYO-key-only
+  deploy path, and `.env.example`
+
+### Unchanged (by design)
+
+- Pipeline, agent loop, proxy, store, and export logic — no functional changes
+- All 27 tests pass without modification (e2e still targets aria labels and button names)
 
 ---
 

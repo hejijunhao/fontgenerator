@@ -37,10 +37,10 @@ export function ProgressSteps({ currentStep, isActive }: ProgressStepsProps) {
             className={[
               'rounded-full px-3 py-1 text-xs font-medium transition-colors',
               isCurrent
-                ? 'bg-ink text-cream'
+                ? 'bg-accent text-accent-fg'
                 : isComplete
-                  ? 'bg-ink/15 text-ink/80'
-                  : 'bg-white/50 text-ink/45',
+                  ? 'bg-surface-hover text-subtle'
+                  : 'border border-border bg-surface-muted text-muted',
             ].join(' ')}
             aria-current={isCurrent ? 'step' : undefined}
           >

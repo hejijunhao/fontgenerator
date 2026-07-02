@@ -19,7 +19,7 @@ export function createAgentProvider(options: AgentProviderOptions = {}) {
     baseURL: agentBaseUrl(),
     apiKey: options.apiKey,
     compatibility: 'strict',
-    appName: 'Font Generator',
+    appName: 'Glyphmill',
     appUrl: typeof window !== 'undefined' ? window.location.origin : undefined,
   })
 }

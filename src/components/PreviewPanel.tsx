@@ -14,19 +14,17 @@ export function PreviewPanel({
   character,
 }: PreviewPanelProps) {
   return (
-    <section className="space-y-4 rounded-2xl border border-ink/10 bg-white/50 p-5">
+    <section className="panel space-y-4 p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-sm font-semibold tracking-wide text-ink/70 uppercase">
-          Preview
-        </h2>
+        <h2 className="panel-heading">Preview</h2>
         {validation && <ValidationBadges validation={validation} />}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <figure className="space-y-2">
-          <figcaption className="text-xs font-medium text-ink/55">Source PNG</figcaption>
+          <figcaption className="text-xs font-medium text-muted">Source PNG</figcaption>
           {sourcePreviewUrl ? (
-            <div className="flex items-center justify-center rounded-xl border border-ink/10 bg-cream p-4">
+            <div className="flex items-center justify-center rounded-xl border border-border bg-preview p-4">
               <img
                 src={sourcePreviewUrl}
                 alt="Uploaded glyph source"
@@ -39,11 +37,11 @@ export function PreviewPanel({
         </figure>
 
         <figure className="space-y-2">
-          <figcaption className="text-xs font-medium text-ink/55">
+          <figcaption className="text-xs font-medium text-muted">
             Built font — &ldquo;{character}&rdquo;
           </figcaption>
           {renderPreviewUrl ? (
-            <div className="flex items-center justify-center rounded-xl border border-ink/10 bg-white p-4">
+            <div className="flex items-center justify-center rounded-xl border border-border bg-preview-frame p-4">
               <img
                 src={renderPreviewUrl}
                 alt={`Rendered ${character} in built font`}
@@ -61,7 +59,7 @@ export function PreviewPanel({
 
 function PlaceholderFrame() {
   return (
-    <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-ink/15 bg-cream/60 text-sm text-ink/40">
+    <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-border-strong bg-preview text-sm text-muted">
       Waiting for output
     </div>
   )
@@ -73,7 +71,7 @@ function ValidationBadges({ validation }: { validation: ValidationResult }) {
       <Badge ok={validation.roundTripOk} label="Round-trip parse" />
       {validation.warnings.length > 0 && (
         <span
-          className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-900"
+          className="rounded-full border border-amber-300/50 bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-900 dark:border-amber-500/30 dark:bg-amber-950/40 dark:text-amber-100"
           title={validation.warnings.join('; ')}
         >
           {validation.warnings.length} warning{validation.warnings.length === 1 ? '' : 's'}
@@ -88,7 +86,9 @@ function Badge({ ok, label }: { ok: boolean; label: string }) {
     <span
       className={[
         'rounded-full px-2.5 py-0.5 text-xs font-medium',
-        ok ? 'bg-emerald-100 text-emerald-900' : 'bg-red-100 text-red-900',
+        ok
+          ? 'border border-emerald-300/50 bg-emerald-50 text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-950/40 dark:text-emerald-100'
+          : 'border border-red-300/50 bg-red-50 text-red-900 dark:border-red-500/30 dark:bg-red-950/40 dark:text-red-100',
       ].join(' ')}
     >
       {ok ? '✓' : '✗'} {label}

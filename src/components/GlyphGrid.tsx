@@ -23,44 +23,47 @@ export function GlyphGrid() {
       : null
 
   return (
-    <section className="space-y-3 rounded-2xl border border-ink/10 bg-white/45 p-4">
+    <section className="panel p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-sm font-semibold tracking-wide text-ink/70 uppercase">
-          Glyphs ({glyphs.length})
-        </h2>
-        <p className="text-xs text-ink/50">Codepoints assigned A, B, C… by upload order</p>
+        <h2 className="panel-heading">Glyphs ({glyphs.length})</h2>
+        <p className="text-xs text-muted">Codepoints assigned A, B, C… by upload order</p>
       </div>
 
       {recipeMismatch && (
-        <p role="alert" className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-950">
+        <p
+          role="alert"
+          className="mt-3 rounded-lg border border-amber-300/50 bg-amber-50 px-3 py-2 text-xs text-amber-950 dark:border-amber-500/30 dark:bg-amber-950/35 dark:text-amber-100"
+        >
           {recipeMismatch}
         </p>
       )}
 
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+      <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
         {glyphs.map((glyph, index) => (
           <li
             key={glyph.id}
-            className="group relative overflow-hidden rounded-xl border border-ink/10 bg-cream/60"
+            className="group relative overflow-hidden rounded-xl border border-border bg-surface-muted"
           >
-            <div className="flex aspect-square items-center justify-center p-2">
+            <div className="flex aspect-square items-center justify-center bg-preview p-2">
               <img
                 src={glyph.sourcePreviewUrl}
                 alt={`Glyph ${index + 1}`}
                 className="max-h-full max-w-full object-contain"
               />
             </div>
-            <div className="flex items-center justify-between gap-1 border-t border-ink/8 bg-white/70 px-2 py-1.5">
-              <span className="truncate text-xs font-medium text-ink/80">
+            <div className="flex items-center justify-between gap-1 border-t border-border bg-surface-strong px-2 py-1.5">
+              <span className="truncate text-xs font-medium text-subtle">
                 {String.fromCodePoint(glyph.codepoint)}
-                <span className="ml-1 font-normal text-ink/45">U+{glyph.codepoint.toString(16).toUpperCase().padStart(4, '0')}</span>
+                <span className="ml-1 font-normal text-muted">
+                  U+{glyph.codepoint.toString(16).toUpperCase().padStart(4, '0')}
+                </span>
               </span>
               {!isBusy && glyphs.length > 1 && (
                 <button
                   type="button"
                   aria-label={`Remove glyph ${String.fromCodePoint(glyph.codepoint)}`}
                   onClick={() => removeGlyph(glyph.id)}
-                  className="shrink-0 rounded-md px-1.5 py-0.5 text-xs text-ink/45 hover:bg-red-50 hover:text-red-800"
+                  className="shrink-0 rounded-md px-1.5 py-0.5 text-xs text-muted hover:bg-red-50 hover:text-red-800 dark:hover:bg-red-950/50 dark:hover:text-red-200"
                 >
                   Remove
                 </button>

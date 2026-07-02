@@ -1,13 +1,15 @@
-# Font Generator
+# Glyphmill
 
-**Drop PNG letters. Download a real font. Your artwork never uploads.**
+**Turn letter images into production-ready fonts.**
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-green.svg)](package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](package.json)
 [![Vite](https://img.shields.io/badge/Vite-7-646cff.svg)](package.json)
 
-An **agentic, browser-native** font builder: PNG glyph art → traced vectors → TTF / WOFF2 / zip. The full conversion pipeline runs client-side in WASM. An optional Claude agent picks parameters, checks its own renders, and asks you to approve at two gates — or skip the agent entirely and generate in one click.
+Drop PNG letter art → traced vectors → TTF / WOFF2 / zip. The full conversion pipeline runs
+client-side in WASM. An optional Claude agent tunes parameters, checks its own renders, and
+asks you to approve at two gates — or skip the agent entirely and generate in one click.
 
 No FontForge install. No accounts. No project database. Refresh and you're done.
 
@@ -38,14 +40,15 @@ No FontForge install. No accounts. No project database. Refresh and you're done.
 
 ## Why this exists
 
-| The old way | This app |
-|-------------|----------|
+| The old way | Glyphmill |
+|-------------|-----------|
 | Trace every letter by hand in FontForge / Glyphs | Drop PNGs, get a font |
 | Walls of sliders (threshold, turdsize, side bearings…) | Agent picks params; you say "sharper corners" at a gate |
 | Desktop-only tooling | Runs in any modern browser |
 | "Where did my files go?" | Source PNGs & font bytes stay local — only QA renders hit the model |
 
-Built for lettering artists, logo designers, and type tinkerers who have **images of letters** and want **actual font files** without becoming a font engineer.
+Built for lettering artists, logo designers, and type tinkerers who have **images of letters**
+and want **actual font files** without becoming a font engineer.
 
 ---
 
@@ -58,8 +61,9 @@ Built for lettering artists, logo designers, and type tinkerers who have **image
 - **Recipe replay** — copy JSON from a run, rebuild later with no model calls
 - **Batch upload** — multiple PNGs → one font (A, B, C… by order)
 - **Multi-format export** — TTF, WOFF2, zip bundle
-- **BYO API key** — bring your own OpenRouter key; never stored
-- **Stateless** — no login, no saved projects, HuggingFace-Space vibes
+- **BYO API key** — paste your OpenRouter key in Agent settings; never stored server-side
+- **Light / dark mode** — system default on first visit, toggle in the header, preference saved locally
+- **Stateless** — no login, no saved projects
 
 ---
 
@@ -110,7 +114,8 @@ Gates are optional (agent path only). No-agent and recipe replay skip straight t
 
 Your **source PNGs and font bytes never leave the browser** for conversion.
 
-In agent mode, only **render previews and agent messages** go to the model through a stateless `/api/agent` proxy — not your original artwork. The proxy logs nothing and stores nothing.
+In agent mode, only **render previews and agent messages** go to the model through a stateless
+`/api/agent` proxy — not your original artwork. The proxy logs nothing and stores nothing.
 
 | Local forever | Agent mode only |
 |---------------|-----------------|
@@ -122,7 +127,8 @@ In agent mode, only **render previews and agent messages** go to the model throu
 
 ## Agent mode
 
-Set `OPENROUTER_API_KEY` in `.env.local` (dev) or Vercel env vars (hosted), **or** paste your key under **Agent settings** (per-request, cleared on refresh).
+Set `OPENROUTER_API_KEY` in `.env.local` (dev) or Vercel env vars (hosted), **or** paste your
+key under **Agent settings** (per-request, cleared on refresh).
 
 ```env
 OPENROUTER_API_KEY=sk-or-...
@@ -131,6 +137,9 @@ OPENROUTER_API_KEY=sk-or-...
 - Default model: `anthropic/claude-opus-4.8`
 - Cheaper toggle: `anthropic/claude-sonnet-5`
 - Hosted proxy rate-limited (30 req/min/IP); BYO-key bypasses the limit
+
+Deploy with **zero env vars** if you only need no-agent generate and recipe replay — visitors
+bring their own key for agent mode.
 
 ---
 
@@ -155,9 +164,12 @@ npm run ci            # build + lint + 27 tests (Vitest + Playwright)
 npm run test:e2e      # UI smoke only
 ```
 
-**Vercel:** static SPA + Edge function at `api/agent/[...path].ts`. Set `OPENROUTER_API_KEY` for hosted agent mode. Config in [`vercel.json`](vercel.json).
+**Vercel:** import the repo as-is — static SPA from `dist/` plus Edge function at
+`api/agent/[...path].ts`. Set `OPENROUTER_API_KEY` only for hosted agent mode. Config in
+[`vercel.json`](vercel.json). Copy [`.env.example`](.env.example) for local dev.
 
-**Stack:** React · TypeScript · Tailwind · Zustand · potrace-wasm · opentype.js · wawoff2 · Vercel AI SDK · OpenRouter
+**Stack:** React · TypeScript · Tailwind · Zustand · potrace-wasm · opentype.js · wawoff2 ·
+Vercel AI SDK · OpenRouter
 
 ---
 
@@ -170,7 +182,8 @@ npm run test:e2e      # UI smoke only
 | [`docs/product-blueprint.md`](docs/product-blueprint.md) | Architecture & contracts |
 | [`docs/executing/implementation-plan.md`](docs/executing/implementation-plan.md) | Build phases |
 
-**v1 caveats:** TTF master (not CFF OTF); WOFF is a stub; potrace-wasm ignores JS trace tuning; agent is single-glyph (batch via no-agent / replay).
+**v1 caveats:** TTF master (not CFF OTF); WOFF is a stub; potrace-wasm ignores JS trace tuning;
+agent is single-glyph (batch via no-agent / replay).
 
 ---
 

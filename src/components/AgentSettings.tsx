@@ -13,19 +13,17 @@ export function AgentSettings() {
   const [showKey, setShowKey] = useState(false)
 
   return (
-    <section className="space-y-3 rounded-2xl border border-ink/10 bg-white/45 p-4">
+    <section className="panel p-4">
       <header className="space-y-1">
-        <h2 className="text-sm font-semibold tracking-wide text-ink/70 uppercase">
-          Agent settings
-        </h2>
-        <p className="text-xs text-ink/50">
+        <h2 className="panel-heading">Agent settings</h2>
+        <p className="text-xs text-muted">
           Hosted mode uses the server key. BYO-key sends your OpenRouter key per request only —
           never stored.
         </p>
       </header>
 
-      <fieldset className="space-y-2" disabled={isBusy}>
-        <legend className="text-xs font-medium text-ink/60">Model</legend>
+      <fieldset className="mt-3 space-y-2" disabled={isBusy}>
+        <legend className="text-xs font-medium text-subtle">Model</legend>
         <div className="flex flex-wrap gap-2">
           <ModelChip
             active={agentModel === 'opus'}
@@ -44,8 +42,8 @@ export function AgentSettings() {
         </div>
       </fieldset>
 
-      <label className="block space-y-1">
-        <span className="text-xs font-medium text-ink/60">
+      <label className="mt-3 block space-y-1">
+        <span className="text-xs font-medium text-subtle">
           OpenRouter API key (optional BYO)
         </span>
         <div className="flex gap-2">
@@ -57,21 +55,21 @@ export function AgentSettings() {
             disabled={isBusy}
             autoComplete="off"
             spellCheck={false}
-            className="min-w-0 flex-1 rounded-xl border border-ink/15 bg-cream/50 px-3 py-2 font-mono text-xs text-ink disabled:opacity-50"
+            className="field-input min-w-0 flex-1 font-mono text-xs disabled:opacity-50"
           />
           <button
             type="button"
             onClick={() => setShowKey((v) => !v)}
             disabled={isBusy}
-            className="rounded-xl border border-ink/15 px-3 py-2 text-xs text-ink/60"
+            className="btn-secondary px-3 py-2 text-xs"
           >
             {showKey ? 'Hide' : 'Show'}
           </button>
         </div>
         {byoApiKey && (
-          <p className="text-xs text-ink/45">
+          <p className="text-xs text-muted">
             Key stays in memory until you refresh. Routed through{' '}
-            <code className="text-ink/55">/api/agent</code> — not saved server-side.
+            <code className="text-subtle">/api/agent</code> — not saved server-side.
           </p>
         )}
       </label>
@@ -99,12 +97,14 @@ function ModelChip({
       className={[
         'rounded-xl border px-4 py-2 text-left text-sm transition-colors',
         active
-          ? 'border-ink bg-ink text-cream'
-          : 'border-ink/20 bg-white text-ink hover:bg-cream/80',
+          ? 'border-accent bg-accent text-accent-fg'
+          : 'border-border-strong bg-surface-strong text-ink hover:bg-surface-hover',
       ].join(' ')}
     >
       <span className="font-medium">{label}</span>
-      <span className={['block text-xs', active ? 'text-cream/75' : 'text-ink/50'].join(' ')}>
+      <span
+        className={['block text-xs', active ? 'text-accent-fg/75' : 'text-muted'].join(' ')}
+      >
         {detail} · <span className="font-mono">{slug}</span>
       </span>
     </button>

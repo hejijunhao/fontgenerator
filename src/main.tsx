@@ -1,7 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { initTheme } from '@/lib/theme'
 import './index.css'
 import App from './App'
+
+initTheme()
 
 if (import.meta.env.VITE_E2E_HOOKS === 'true') {
   import('@/store/projectStore').then(({ useProjectStore }) => {

@@ -1,11 +1,73 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --color-cream: #f1efe2;
+
+  --color-canvas: #f6f5f0;
+  --color-cream: #eeede6;
   --color-ink: #1a1a18;
+  --color-surface: rgb(255 255 255 / 0.58);
+  --color-surface-muted: rgb(255 255 255 / 0.38);
+  --color-surface-strong: #ffffff;
+  --color-surface-hover: rgb(255 255 255 / 0.78);
+  --color-muted: rgb(26 26 24 / 0.58);
+  --color-subtle: rgb(26 26 24 / 0.42);
+  --color-border: rgb(26 26 24 / 0.1);
+  --color-border-strong: rgb(26 26 24 / 0.18);
+  --color-preview: #f1efe2;
+  --color-preview-frame: #ffffff;
+  --color-accent: #1a1a18;
+  --color-accent-fg: #f1efe2;
+  --color-input: rgb(241 239 226 / 0.65);
+}
+
+html.dark {
+  --color-canvas: #090908;
+  --color-cream: #111110;
+  --color-ink: #eae8e2;
+  --color-surface: rgb(255 255 255 / 0.045);
+  --color-surface-muted: rgb(255 255 255 / 0.03);
+  --color-surface-strong: #1a1a18;
+  --color-surface-hover: rgb(255 255 255 / 0.08);
+  --color-muted: rgb(234 232 226 / 0.55);
+  --color-subtle: rgb(234 232 226 / 0.38);
+  --color-border: rgb(255 255 255 / 0.09);
+  --color-border-strong: rgb(255 255 255 / 0.16);
+  --color-preview: #161614;
+  --color-preview-frame: #1e1e1c;
+  --color-accent: #eae8e2;
+  --color-accent-fg: #0c0c0b;
+  --color-input: rgb(255 255 255 / 0.05);
 }
 
 body {
-  @apply min-h-dvh bg-cream text-ink antialiased;
+  @apply min-h-dvh bg-canvas text-ink antialiased transition-colors duration-200;
+}
+
+@layer components {
+  .btn-primary {
+    @apply rounded-xl bg-accent px-5 py-2.5 text-sm font-medium text-accent-fg transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  .btn-secondary {
+    @apply rounded-xl border border-border-strong bg-surface-strong px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  .btn-ghost {
+    @apply text-sm text-subtle underline-offset-2 transition-colors hover:text-muted hover:underline;
+  }
+
+  .panel {
+    @apply rounded-2xl border border-border bg-surface;
+  }
+
+  .panel-heading {
+    @apply text-sm font-semibold tracking-wide text-subtle uppercase;
+  }
+
+  .field-input {
+    @apply rounded-xl border border-border-strong bg-input px-3 py-2 text-ink transition-colors focus:border-subtle focus:outline-none;
+  }
 }

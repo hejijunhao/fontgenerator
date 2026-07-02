@@ -9,24 +9,27 @@ type Gate2PanelProps = {
   onAcceptExport?: () => void
 }
 
+const gateShell =
+  'space-y-4 rounded-2xl border-2 border-emerald-400/45 bg-emerald-50/70 p-5 dark:border-emerald-500/35 dark:bg-emerald-950/30'
+const gateLabel =
+  'text-xs font-semibold tracking-wide text-emerald-900/70 uppercase dark:text-emerald-200/80'
+const gateBody = 'text-sm text-emerald-950/80 dark:text-emerald-100/85'
+const gateField =
+  'w-full rounded-xl border border-emerald-300/80 bg-preview-frame px-3 py-2 text-sm text-ink dark:border-emerald-500/30'
+
 export function Gate2Panel({ gate, handlers, onAcceptExport }: Gate2PanelProps) {
   const [nudge, setNudge] = useState('')
 
   return (
-    <section
-      className="space-y-4 rounded-2xl border-2 border-emerald-400/45 bg-emerald-50/70 p-5"
-      aria-label="Gate 2 — font review"
-    >
+    <section className={gateShell} aria-label="Gate 2 — font review">
       <header className="space-y-1">
-        <p className="text-xs font-semibold tracking-wide text-emerald-900/70 uppercase">
-          Gate 2 — Font review
-        </p>
-        <p className="text-sm text-emerald-950/80">{gate.summary}</p>
+        <p className={gateLabel}>Gate 2 — Font review</p>
+        <p className={gateBody}>{gate.summary}</p>
       </header>
 
       <div className="flex flex-wrap items-start gap-4">
         {gate.renderPreviewPng ? (
-          <div className="flex items-center justify-center rounded-xl border border-emerald-200 bg-white p-4">
+          <div className="flex items-center justify-center rounded-xl border border-emerald-200 bg-preview-frame p-4 dark:border-emerald-500/25">
             <img
               src={gate.renderPreviewPng}
               alt={`Rendered ${gate.proposedCharacter}`}
@@ -34,7 +37,7 @@ export function Gate2Panel({ gate, handlers, onAcceptExport }: Gate2PanelProps) 
             />
           </div>
         ) : (
-          <div className="flex h-52 w-full items-center justify-center rounded-xl border border-dashed border-emerald-200 text-sm text-emerald-900/50">
+          <div className="flex h-52 w-full items-center justify-center rounded-xl border border-dashed border-emerald-200 text-sm text-emerald-900/50 dark:border-emerald-500/30 dark:text-emerald-200/50">
             No render preview
           </div>
         )}
@@ -42,13 +45,15 @@ export function Gate2Panel({ gate, handlers, onAcceptExport }: Gate2PanelProps) 
       </div>
 
       <label className="block space-y-1">
-        <span className="text-xs font-medium text-emerald-900/70">Adjust nudge (optional)</span>
+        <span className="text-xs font-medium text-emerald-900/70 dark:text-emerald-200/80">
+          Adjust nudge (optional)
+        </span>
         <textarea
           value={nudge}
           onChange={(e) => setNudge(e.target.value)}
           placeholder='e.g. "counter filled" or "sits too low"'
           rows={2}
-          className="w-full rounded-xl border border-emerald-300/80 bg-white px-3 py-2 text-sm text-ink"
+          className={gateField}
         />
       </label>
 
@@ -59,14 +64,14 @@ export function Gate2Panel({ gate, handlers, onAcceptExport }: Gate2PanelProps) 
             handlers.accept()
             onAcceptExport?.()
           }}
-          className="rounded-xl bg-ink px-5 py-2.5 text-sm font-medium text-cream"
+          className="btn-primary"
         >
           Accept &amp; export
         </button>
         <button
           type="button"
           onClick={() => handlers.adjust(nudge.trim() || 'counter filled')}
-          className="rounded-xl border border-emerald-500/50 bg-white px-5 py-2.5 text-sm font-medium text-emerald-950"
+          className="btn-secondary border-emerald-500/50 dark:border-emerald-500/35"
         >
           Adjust
         </button>
@@ -80,7 +85,7 @@ function ValidationBadges({ validation }: { validation: ValidationResult }) {
     <div className="flex flex-col gap-2">
       <Badge ok={validation.roundTripOk} label="Round-trip parse" />
       {validation.warnings.length > 0 && (
-        <p className="max-w-xs text-xs text-emerald-900/60">
+        <p className="max-w-xs text-xs text-emerald-900/60 dark:text-emerald-200/60">
           {validation.warnings.length} warning{validation.warnings.length === 1 ? '' : 's'}
         </p>
       )}
@@ -93,7 +98,9 @@ function Badge({ ok, label }: { ok: boolean; label: string }) {
     <span
       className={[
         'inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium',
-        ok ? 'bg-emerald-100 text-emerald-900' : 'bg-red-100 text-red-900',
+        ok
+          ? 'border border-emerald-300/50 bg-emerald-50 text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-950/40 dark:text-emerald-100'
+          : 'border border-red-300/50 bg-red-50 text-red-900 dark:border-red-500/30 dark:bg-red-950/40 dark:text-red-100',
       ].join(' ')}
     >
       {ok ? '✓' : '✗'} {label}

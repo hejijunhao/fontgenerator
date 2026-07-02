@@ -1,3 +1,4 @@
+import { AppHeader } from '@/components/AppHeader'
 import { AgentSettings } from '@/components/AgentSettings'
 import { DropZone } from '@/components/DropZone'
 import { ExportPanel } from '@/components/ExportPanel'
@@ -41,162 +42,144 @@ function App() {
         : 'A'
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-3xl flex-col px-6 py-12">
-      <header className="mb-10 space-y-2">
-        <p className="text-sm font-medium tracking-wide text-ink/60 uppercase">
-          Agentic font generator
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight">Font Generator</h1>
-        <p className="max-w-xl text-base leading-relaxed text-ink/70">
-          Drop letter PNGs, run the agent or replay a recipe, approve two gates, download
-          TTF / WOFF2 / zip — all in the browser.
-        </p>
-      </header>
+    <div className="flex min-h-dvh flex-col">
+      <AppHeader />
 
-      <main className="flex flex-1 flex-col gap-6">
-        <DropZone />
+      <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-6 py-10">
+        <main className="flex flex-1 flex-col gap-6">
+          <DropZone />
 
-        <GlyphGrid />
+          <GlyphGrid />
 
-        <AgentSettings />
+          <AgentSettings />
 
-        <div className="flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            onClick={() => generate()}
-            disabled={!canGenerate}
-            className="rounded-xl bg-ink px-5 py-2.5 text-sm font-medium text-cream transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            {isGenerating ? 'Generating…' : 'Generate (no agent)'}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => runAgent()}
-            disabled={!canRunAgent}
-            className="rounded-xl border border-ink/25 bg-white/70 px-5 py-2.5 text-sm font-medium text-ink transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            {isAgentRunning && !atGate ? 'Agent running…' : 'Run agent'}
-          </button>
-
-          {(isAgentRunning || atGate) && (
+          <div className="flex flex-wrap items-center gap-3">
             <button
               type="button"
-              onClick={() => cancelAgent()}
-              className="text-sm text-ink/55 underline-offset-2 hover:text-ink/75 hover:underline"
+              onClick={() => generate()}
+              disabled={!canGenerate}
+              className="btn-primary"
             >
-              Cancel
+              {isGenerating ? 'Generating…' : 'Generate (no agent)'}
             </button>
-          )}
 
-          {glyphs.length > 0 && !busy && (
             <button
               type="button"
-              onClick={() => clearProject()}
-              className="text-sm text-ink/50 underline-offset-2 hover:text-ink/70 hover:underline"
+              onClick={() => runAgent()}
+              disabled={!canRunAgent}
+              className="btn-secondary"
             >
-              Clear
+              {isAgentRunning && !atGate ? 'Agent running…' : 'Run agent'}
             </button>
+
+            {(isAgentRunning || atGate) && (
+              <button type="button" onClick={() => cancelAgent()} className="btn-ghost">
+                Cancel
+              </button>
+            )}
+
+            {glyphs.length > 0 && !busy && (
+              <button type="button" onClick={() => clearProject()} className="btn-ghost">
+                Clear
+              </button>
+            )}
+          </div>
+
+          <PrivacyNote />
+
+          {glyphs.length > 0 && (
+            <PartialFontWarning
+              codepoints={
+                recipe?.glyphs.map((g) => g.codepoint) ?? glyphs.map((g) => g.codepoint)
+              }
+            />
           )}
-        </div>
 
-        <PrivacyNote />
-
-        {glyphs.length > 0 && (
-          <PartialFontWarning
-            codepoints={
-              recipe?.glyphs.map((g) => g.codepoint) ?? glyphs.map((g) => g.codepoint)
-            }
+          <ExportPanel
+            family={meta.family}
+            recipe={recipe}
+            output={output}
+            isReplaying={isReplaying}
+            onCopyRecipe={() => copyRecipe()}
+            onReplayRecipe={(json) => replayRecipe(json)}
+            onDownload={(format) => downloadExport(format)}
           />
-        )}
 
-        <ExportPanel
-          family={meta.family}
-          recipe={recipe}
-          output={output}
-          isReplaying={isReplaying}
-          onCopyRecipe={() => copyRecipe()}
-          onReplayRecipe={(json) => replayRecipe(json)}
-          onDownload={(format) => downloadExport(format)}
-        />
+          {glyph?.status === 'gate1' && glyph.gate && gateHandlers && (
+            <Gate1Panel
+              gate={glyph.gate}
+              sourcePreviewUrl={glyph.sourcePreviewUrl}
+              handlers={gateHandlers}
+            />
+          )}
 
-        {glyph?.status === 'gate1' && glyph.gate && gateHandlers && (
-          <Gate1Panel
-            gate={glyph.gate}
-            sourcePreviewUrl={glyph.sourcePreviewUrl}
-            handlers={gateHandlers}
-          />
-        )}
+          {glyph?.status === 'gate2' && glyph.gate && gateHandlers && (
+            <Gate2Panel
+              gate={glyph.gate}
+              handlers={gateHandlers}
+              onAcceptExport={() => downloadExport('zip')}
+            />
+          )}
 
-        {glyph?.status === 'gate2' && glyph.gate && gateHandlers && (
-          <Gate2Panel
-            gate={glyph.gate}
-            handlers={gateHandlers}
-            onAcceptExport={() => downloadExport('zip')}
-          />
-        )}
+          {glyph && (isGenerating || isReplaying) && (
+            <ProgressSteps currentStep={glyph.step} isActive={isGenerating || isReplaying} />
+          )}
 
-        {glyph && (isGenerating || isReplaying) && (
-          <ProgressSteps currentStep={glyph.step} isActive={isGenerating || isReplaying} />
-        )}
+          {glyph?.status === 'exporting' && (
+            <div role="status" className="panel px-4 py-3 text-sm text-muted">
+              Exporting font…
+            </div>
+          )}
 
-        {glyph?.status === 'exporting' && (
-          <div
-            role="status"
-            className="rounded-xl border border-ink/10 bg-white/50 px-4 py-3 text-sm text-ink/70"
-          >
-            Exporting font…
-          </div>
-        )}
+          {(glyph?.agentLog.length || (isAgentRunning && !atGate)) ? (
+            <RunView
+              steps={glyph?.agentLog ?? []}
+              isRunning={isAgentRunning && !atGate}
+              usageNote={agentUsage}
+            />
+          ) : null}
 
-        {(glyph?.agentLog.length || (isAgentRunning && !atGate)) ? (
-          <RunView
-            steps={glyph?.agentLog ?? []}
-            isRunning={isAgentRunning && !atGate}
-            usageNote={agentUsage}
-          />
-        ) : null}
+          {glyph?.error && (
+            <div
+              role="alert"
+              className="rounded-xl border border-red-300/50 bg-red-50 px-4 py-3 text-sm text-red-950 dark:border-red-500/30 dark:bg-red-950/40 dark:text-red-100"
+            >
+              <span className="font-medium">Something failed.</span> {glyph.error}
+            </div>
+          )}
 
-        {glyph?.error && (
-          <div
-            role="alert"
-            className="rounded-xl border border-red-300/60 bg-red-50 px-4 py-3 text-sm text-red-950"
-          >
-            <span className="font-medium">Something failed.</span> {glyph.error}
-          </div>
-        )}
+          {glyph && glyph.status !== 'gate1' && glyph.status !== 'gate2' && (
+            <PreviewPanel
+              sourcePreviewUrl={glyph.sourcePreviewUrl}
+              renderPreviewUrl={glyph.previewPng}
+              validation={glyph.validation}
+              character={previewCharacter}
+            />
+          )}
 
-        {glyph && glyph.status !== 'gate1' && glyph.status !== 'gate2' && (
-          <PreviewPanel
-            sourcePreviewUrl={glyph.sourcePreviewUrl}
-            renderPreviewUrl={glyph.previewPng}
-            validation={glyph.validation}
-            character={previewCharacter}
-          />
-        )}
+          {!glyph && <IdleHint />}
+        </main>
 
-        {!glyph && <IdleHint />}
-      </main>
-
-      <footer className="mt-12 text-sm text-ink/50">
-        v1 — conversion stays in your browser; agent QA previews go to the model via the
-        proxy.
-      </footer>
+        <footer className="mt-14 border-t border-border pt-6 text-xs text-subtle">
+          Conversion stays in your browser. Agent QA previews route through the proxy — never your
+          source artwork.
+        </footer>
+      </div>
     </div>
   )
 }
 
 function PrivacyNote() {
   return (
-    <aside className="rounded-xl border border-ink/8 bg-white/35 px-4 py-3 text-xs leading-relaxed text-ink/55">
-      <p className="font-medium text-ink/70">Privacy</p>
-      <ul className="mt-1 list-inside list-disc space-y-0.5">
+    <aside className="panel px-4 py-3 text-xs leading-relaxed text-muted">
+      <p className="font-medium text-subtle">Privacy</p>
+      <ul className="mt-1.5 list-inside list-disc space-y-0.5">
         <li>
           Source PNGs, SVG paths, and font bytes never leave your browser for conversion.
         </li>
         <li>
           Agent mode sends render previews and text through{' '}
-          <code className="text-ink/60">/api/agent</code> to OpenRouter for vision QA — not your
+          <code className="text-subtle">/api/agent</code> to OpenRouter for vision QA — not your
           original artwork.
         </li>
         <li>
@@ -210,13 +193,10 @@ function PrivacyNote() {
 
 function IdleHint() {
   return (
-    <div
-      role="status"
-      className="rounded-xl border border-ink/10 bg-white/40 px-4 py-3 text-sm text-ink/65"
-    >
-      Upload <span className="font-medium">A-KaminoDeco.png</span> (or multiple letters for a
-      batch font). Try recipe replay with{' '}
-      <span className="font-medium">tests/fixtures/kamino-deco-recipe.json</span>.
+    <div role="status" className="panel px-4 py-3 text-sm text-muted">
+      Upload <span className="font-medium text-ink">A-KaminoDeco.png</span> (or multiple letters
+      for a batch font). Try recipe replay with{' '}
+      <span className="font-medium text-ink">tests/fixtures/kamino-deco-recipe.json</span>.
     </div>
   )
 }

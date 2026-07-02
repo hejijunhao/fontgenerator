@@ -33,12 +33,10 @@ export function RunView({ steps, isRunning, usageNote }: RunViewProps) {
   if (steps.length === 0 && !isRunning) return null
 
   return (
-    <section className="space-y-3 rounded-2xl border border-ink/10 bg-white/50 p-5">
+    <section className="panel space-y-3 p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-sm font-semibold tracking-wide text-ink/70 uppercase">
-          Agent run
-        </h2>
-        <div className="flex flex-wrap items-center gap-2 text-xs text-ink/55">
+        <h2 className="panel-heading">Agent run</h2>
+        <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
           {runStarted != null && (
             <AgentElapsed
               key={runStarted}
@@ -59,36 +57,36 @@ export function RunView({ steps, isRunning, usageNote }: RunViewProps) {
           return (
             <li
               key={`${step.timestamp}-${step.tool}-${index}`}
-              className="flex gap-3 rounded-xl border border-ink/8 bg-cream/40 px-3 py-2.5 text-sm"
+              className="flex gap-3 rounded-xl border border-border bg-surface-muted px-3 py-2.5 text-sm"
             >
-              <span className="w-5 shrink-0 pt-0.5 text-xs font-medium text-ink/40">
+              <span className="w-5 shrink-0 pt-0.5 text-xs font-medium text-muted">
                 {index + 1}
               </span>
               <div className="min-w-0 flex-1 space-y-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-medium text-ink">{step.tool}</span>
-                  <span className="text-xs text-ink/50">{labelForTool(step.tool)}</span>
+                  <span className="text-xs text-muted">{labelForTool(step.tool)}</span>
                   {duration != null && (
-                    <span className="text-xs text-ink/40">+{formatStepDuration(duration)}</span>
+                    <span className="text-xs text-muted">+{formatStepDuration(duration)}</span>
                   )}
                   {step.verdict && (
-                    <span className="rounded-full bg-ink/10 px-2 py-0.5 text-xs text-ink/70">
+                    <span className="rounded-full bg-surface-hover px-2 py-0.5 text-xs text-subtle">
                       {step.verdict}
                     </span>
                   )}
                   {step.error && (
-                    <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs text-red-900">
+                    <span className="rounded-full border border-red-300/50 bg-red-50 px-2 py-0.5 text-xs text-red-900 dark:border-red-500/30 dark:bg-red-950/40 dark:text-red-200">
                       error
                     </span>
                   )}
                 </div>
-                <pre className="max-h-24 overflow-auto text-xs whitespace-pre-wrap text-ink/60">
+                <pre className="max-h-24 overflow-auto text-xs whitespace-pre-wrap text-muted">
                   {JSON.stringify(step.params, null, 2)}
                 </pre>
                 {step.error && (
-                  <div className="space-y-0.5 text-xs text-red-800">
+                  <div className="space-y-0.5 text-xs text-red-800 dark:text-red-300">
                     <p>{step.error}</p>
-                    {hint && <p className="text-red-900/70">Recovery: {hint}</p>}
+                    {hint && <p className="text-red-900/70 dark:text-red-400/80">Recovery: {hint}</p>}
                   </div>
                 )}
               </div>
@@ -96,7 +94,7 @@ export function RunView({ steps, isRunning, usageNote }: RunViewProps) {
                 <img
                   src={step.previewPng}
                   alt={`${step.tool} preview`}
-                  className="h-16 w-16 shrink-0 rounded-lg border border-ink/10 bg-white object-contain"
+                  className="h-16 w-16 shrink-0 rounded-lg border border-border bg-preview-frame object-contain"
                 />
               )}
             </li>
@@ -105,14 +103,14 @@ export function RunView({ steps, isRunning, usageNote }: RunViewProps) {
       </ol>
 
       {isRunning && steps.length > 0 && !steps[steps.length - 1]?.error && (
-        <p className="text-xs text-ink/50">
+        <p className="text-xs text-muted">
           The agent is choosing parameters and calling WASM tools locally. Only preview images
           and messages go through the proxy.
         </p>
       )}
 
       {usageNote && (
-        <p className="text-xs text-ink/50">
+        <p className="text-xs text-muted">
           Tokens: {usageNote.totalTokens ?? '—'}
           {usageNote.cacheReadTokens != null && usageNote.cacheReadTokens > 0
             ? ` · cache read: ${usageNote.cacheReadTokens}`
