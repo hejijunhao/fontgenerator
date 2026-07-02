@@ -1,21 +1,45 @@
+import { AppNavLink } from '@/components/AppNavLink'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { useAppRoute } from '@/hooks/useAppRoute'
+import { routeHref } from '@/lib/navigation'
 
 export function AppHeader() {
+  const route = useAppRoute()
+
   return (
     <header className="border-b border-border bg-canvas/90 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-3xl items-start justify-between gap-6 px-6 py-8">
-        <div className="min-w-0 space-y-3">
-          <div className="flex items-center gap-3">
-            <GlyphMark />
-            <h1 className="font-sans text-[0.8125rem] font-semibold tracking-[0.38em] text-ink">
-              GLYPHMILL
-            </h1>
+      <div className="mx-auto max-w-3xl px-6 py-6">
+        <div className="flex items-start justify-between gap-4">
+          <a href={routeHref('studio')} className="group min-w-0 space-y-2.5">
+            <div className="flex items-center gap-3">
+              <GlyphMark />
+              <span className="font-sans text-[0.8125rem] font-semibold tracking-[0.38em] text-ink transition-opacity group-hover:opacity-80">
+                GLYPHMILL
+              </span>
+            </div>
+            {route === 'studio' && (
+              <p className="max-w-md text-[0.9375rem] leading-relaxed text-muted">
+                Turn letter images into production-ready fonts — in your browser.
+              </p>
+            )}
+          </a>
+
+          <div className="flex shrink-0 items-center gap-2">
+            <nav aria-label="Primary" className="hidden items-center gap-1 sm:flex">
+              <AppNavLink route="how-it-works" active={route === 'how-it-works'} />
+              <AppNavLink route="studio" active={route === 'studio'} />
+            </nav>
+            <ThemeToggle />
           </div>
-          <p className="max-w-md text-[0.9375rem] leading-relaxed text-muted">
-            Turn letter images into production-ready fonts — in your browser.
-          </p>
         </div>
-        <ThemeToggle />
+
+        <nav
+          aria-label="Primary mobile"
+          className="mt-4 flex items-center gap-1 sm:hidden"
+        >
+          <AppNavLink route="how-it-works" active={route === 'how-it-works'} />
+          <AppNavLink route="studio" active={route === 'studio'} />
+        </nav>
       </div>
     </header>
   )

@@ -70,4 +70,25 @@ body {
   .field-input {
     @apply rounded-xl border border-border-strong bg-input px-3 py-2 text-ink transition-colors focus:border-subtle focus:outline-none;
   }
+
+  .pipeline-step-num {
+    @apply font-mono text-xs font-medium tracking-wider text-subtle;
+  }
+
+  .faq-item summary:hover {
+    @apply bg-surface-hover;
+  }
+
+  .faq-item[open] summary {
+    @apply border-b border-border bg-surface-muted;
+  }
+
+  .callout {
+    @apply relative overflow-hidden;
+  }
+
+  .callout::before {
+    content: '';
+    @apply pointer-events-none absolute inset-y-0 left-0 w-1 bg-accent;
+  }
 }

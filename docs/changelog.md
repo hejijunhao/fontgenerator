@@ -6,9 +6,52 @@ All notable changes to Glyphmill are documented here. The format is based on
 
 ## Index
 
+- **[0.2.1](#021--2026-07-02)** — Public "How it works" FAQ page and in-app navigation
 - **[0.2.0](#020--2026-07-02)** — Glyphmill rebrand, light/dark mode, polished UI shell
 - **[0.1.1](#011--2026-07-02)** — CI hardening, lint fixes, repo hygiene
 - **[0.1.0](#010--2026-07-01)** — Initial v1: browser PNG → font pipeline with optional agent
+
+---
+
+## [0.2.1] — 2026-07-02
+
+Public-facing explainer — **How it works** page that answers how deterministic conversion
+works without an agent, and where the agent actually adds value.
+
+### Why
+
+Visitors (and deployers) need to understand that Glyphmill is not "AI generates fonts." The
+no-agent path is real, free, and deterministic; the agent is optional parameter tuning and
+visual QA. That story belonged in the product, not only in conversation or internal docs.
+
+### Added
+
+- **`HowItWorksView`** (`src/views/HowItWorksView.tsx`) — public FAQ / explainer with:
+  - Hero: honest positioning ("fonts from images are math, not magic")
+  - Five-stage pipeline breakdown (preprocess → trace → place → build → export)
+  - "Parameters, not sorcery" callout — why threshold/baseline/turdsize matter
+  - Three-path cards (no agent, agent, recipe replay) with cost and best-for guidance
+  - Side-by-side no-agent vs agent comparison
+  - Eight-item FAQ accordion (`<details>`) — browser vs server, recipes, gates, limitations
+  - CTA back to Studio
+- **Hash routing** (`src/lib/navigation.ts`, `src/hooks/useAppRoute.ts`) — `#/` Studio,
+  `#/how-it-works` FAQ; no new router dependency; scroll-to-top on navigate
+- **`AppNavLink`** (`src/components/AppNavLink.tsx`) — shared nav pill with active state
+- **`AppFooter`** (`src/components/AppFooter.tsx`) — footer nav mirroring header links
+- **`StudioView`** (`src/views/StudioView.tsx`) — studio UI extracted from `App.tsx`
+
+### Changed
+
+- **`AppHeader`** — primary nav (`How it works` · `Studio`); logo links home; tagline hidden
+  on FAQ view to reduce noise
+- **`App.tsx`** — thin shell: header + route switch + footer
+- **`StudioView`** — idle hint and privacy note link to How it works
+- **`index.css`** — styles for pipeline step numbers, FAQ accordion, callout accent bar
+
+### Unchanged
+
+- Pipeline, agent, store, and export behaviour — documentation-only surface area
+- All 27 tests pass without modification
 
 ---
 
