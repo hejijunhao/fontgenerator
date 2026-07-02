@@ -3,7 +3,6 @@ import { AppHeader } from '@/components/AppHeader'
 import { JsonLd } from '@/components/layout/JsonLd'
 import { PageShell } from '@/components/layout/PageShell'
 import { useAppRoute } from '@/hooks/useAppRoute'
-import { useMillConsoleTheme } from '@/hooks/useMillConsoleTheme'
 import { usePageMeta } from '@/hooks/usePageMeta'
 
 import { FoundryPlaceholderView } from '@/views/FoundryPlaceholderView'
@@ -14,10 +13,11 @@ import { StudioView } from '@/views/StudioView'
 function App() {
   const route = useAppRoute()
   usePageMeta(route)
-  useMillConsoleTheme(route)
 
   return (
-    <div className={['flex min-h-dvh flex-col', route === 'mill' ? 'console-root' : ''].join(' ')}>
+    <div
+      className={['flex min-h-dvh flex-col', route === 'mill' ? 'console-root dark' : ''].join(' ')}
+    >
       <AppHeader />
       <JsonLd route={route} />
 

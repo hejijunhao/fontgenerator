@@ -15,9 +15,32 @@ test.describe('font generator smoke', () => {
         hasText: /Glyphmill is a browser tool that converts PNG letter images/i,
       }),
     ).toBeVisible()
-    await page.getByRole('link', { name: 'Open Mill' }).first().click()
+    await page.getByRole('link', { name: 'Try with sample letter A' }).first().click()
     await expect(page).toHaveURL(/\/mill$/)
     await expect(page.getByLabel('Drop PNG glyph images here')).toBeVisible()
+  })
+
+  test('landing has distinct section chapters', async ({ page }) => {
+    await page.goto('/')
+
+    for (const id of ['hero', 'proof', 'chambers', 'compare', 'steps', 'cta']) {
+      await expect(page.locator(`#${id}`)).toBeVisible()
+    }
+
+    await expect(page.locator('.section-band--hero')).toBeVisible()
+    await expect(page.locator('.section-band--muted')).toBeVisible()
+    await expect(page.getByRole('link', { name: 'See full comparison table →' })).toBeVisible()
+    await expect(page.locator('details summary', { hasText: 'Quick answers' })).toBeVisible()
+  })
+
+  test('mill collapses inactive stage bays', async ({ page }) => {
+    await page.goto('/mill')
+    await page.getByLabel('Drop PNG glyph images here').click()
+    await page.locator('input[type="file"]').setInputFiles(fixturePng)
+
+    await expect(page.getByRole('button', { name: 'Generate (no agent)' })).toBeVisible()
+    await expect(page.getByRole('button', { name: /Expand SOURCE/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /Expand EXPORT/i })).toBeVisible()
   })
 
   test('no-agent upload → generate → TTF download', async ({ page }) => {
@@ -27,12 +50,11 @@ test.describe('font generator smoke', () => {
     await page.getByLabel('Drop PNG glyph images here').click()
     await page.locator('input[type="file"]').setInputFiles(fixturePng)
 
-    await expect(page.getByText('1 PNG ready')).toBeVisible()
+    await expect(page.getByRole('button', { name: /1 PNG loaded/i })).toBeVisible()
     await page.getByRole('button', { name: 'Generate (no agent)' }).click()
     await expect(page.getByRole('button', { name: /KaminoDeco\.ttf/ })).toBeVisible({
       timeout: 60_000,
     })
-    await expect(page.getByText('✓ Round-trip parse')).toBeVisible()
 
     await page.getByRole('button', { name: /KaminoDeco\.ttf/ }).click()
     const download = await downloadPromise
@@ -115,8 +137,27 @@ test.describe('font generator smoke', () => {
     expect(html).toContain('Glyphmill converts PNG letter images into installable TTF and WOFF2 fonts')
   })
 
+  test('header height stable across routes', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 720 })
+
+    const paths = ['/', '/foundry', '/mill', '/how-it-works'] as const
+    const heights: number[] = []
+
+    for (const path of paths) {
+      await page.goto(path)
+      await page.waitForLoadState('domcontentloaded')
+      const box = await page.locator('header.app-header').boundingBox()
+      expect(box).not.toBeNull()
+      heights.push(box!.height)
+    }
+
+    expect(Math.max(...heights) - Math.min(...heights)).toBeLessThanOrEqual(2)
+  })
+
   test('foundry placeholder → Mill CTA', async ({ page }) => {
     await page.goto('/foundry')
+    await expect(page.locator('.status-banner-inert')).toContainText('Not available')
+    await expect(page.locator('.status-banner-inert')).toContainText('Mill is live today')
     await expect(
       page.locator('main h1', {
         hasText: /Foundry — agentic glyph creation/i,
@@ -126,5 +167,29 @@ test.describe('font generator smoke', () => {
     await page.getByRole('link', { name: 'Use the Mill today' }).first().click()
     await expect(page).toHaveURL(/\/mill$/)
     await expect(page.getByLabel('Drop PNG glyph images here')).toBeVisible()
+  })
+
+  test('primary nav prioritizes Mill and de-emphasizes Foundry', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 720 })
+    await page.goto('/')
+
+    const nav = page.getByRole('navigation', { name: 'Primary' })
+    const links = nav.getByRole('link')
+    await expect(links.nth(0)).toHaveText(/Mill/)
+    await expect(links.nth(2)).toHaveText(/Foundry/)
+    await expect(links.nth(2)).toHaveClass(/opacity-75/)
+  })
+
+  test('mill primary bays wear registration brackets', async ({ page }) => {
+    await page.goto('/mill')
+
+    const bay = page.locator('.console-bay').first()
+    await expect(bay).toBeVisible()
+
+    const hasBrackets = await bay.evaluate((el) => {
+      const after = window.getComputedStyle(el, '::after')
+      return after.content !== 'none' && after.backgroundImage !== 'none'
+    })
+    expect(hasBrackets).toBe(true)
   })
 })

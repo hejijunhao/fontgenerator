@@ -14,17 +14,17 @@ export function PreviewPanel({
   character,
 }: PreviewPanelProps) {
   return (
-    <section className="panel space-y-4 p-5">
+    <div className="console-bay-nested space-y-4 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="panel-heading">Preview</h2>
+        <p className="console-readout">Preview</p>
         {validation && <ValidationBadges validation={validation} />}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <figure className="space-y-2">
-          <figcaption className="text-xs font-medium text-muted">Source PNG</figcaption>
+          <figcaption className="console-readout">Source PNG</figcaption>
           {sourcePreviewUrl ? (
-            <div className="flex items-center justify-center rounded-xl border border-border bg-preview p-4">
+            <div className="flex items-center justify-center border border-border bg-preview p-4">
               <img
                 src={sourcePreviewUrl}
                 alt="Uploaded glyph source"
@@ -37,11 +37,11 @@ export function PreviewPanel({
         </figure>
 
         <figure className="space-y-2">
-          <figcaption className="text-xs font-medium text-muted">
+          <figcaption className="console-readout">
             Built font — &ldquo;{character}&rdquo;
           </figcaption>
           {renderPreviewUrl ? (
-            <div className="flex items-center justify-center rounded-xl border border-border bg-preview-frame p-4">
+            <div className="flex items-center justify-center border border-border bg-preview-frame p-4">
               <img
                 src={renderPreviewUrl}
                 alt={`Rendered ${character} in built font`}
@@ -53,13 +53,13 @@ export function PreviewPanel({
           )}
         </figure>
       </div>
-    </section>
+    </div>
   )
 }
 
 function PlaceholderFrame() {
   return (
-    <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-border-strong bg-preview text-sm text-muted">
+    <div className="flex h-40 items-center justify-center border border-dashed border-border bg-preview text-sm text-muted">
       Waiting for output
     </div>
   )

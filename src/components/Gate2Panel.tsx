@@ -14,7 +14,7 @@ export function Gate2Panel({ gate, handlers, onAcceptExport }: Gate2PanelProps) 
 
   return (
     <section
-      className="console-gate console-gate--font space-y-4 p-5"
+      className="console-gate console-gate--font min-h-[20rem] space-y-4 p-5"
       aria-label="Gate 2 — font review"
     >
       <header className="space-y-1">

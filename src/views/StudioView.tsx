@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import { AgentSettings } from '@/components/AgentSettings'
-import { Bay } from '@/components/console/Bay'
 import { PipelineGraph } from '@/components/console/PipelineGraph'
+import { StageBay } from '@/components/console/StageBay'
 import { StatusPill } from '@/components/console/StatusPill'
 import { Toast } from '@/components/console/Toast'
 import { DropZone } from '@/components/DropZone'
@@ -13,7 +13,13 @@ import { PartialFontWarning } from '@/components/PartialFontWarning'
 import { PreviewPanel } from '@/components/PreviewPanel'
 import { RunView } from '@/components/RunView'
 import { MillStepIndicator } from '@/components/layout/MillStepIndicator'
-import { deriveMillStage } from '@/lib/millStage'
+import { deriveMillStage, type MillStage } from '@/lib/millStage'
+import {
+  buildBaySummary,
+  exportBaySummary,
+  reviewBaySummary,
+  sourceBaySummary,
+} from '@/lib/millBaySummaries'
 import { routeHref } from '@/lib/navigation'
 import { useWasmWarmup } from '@/lib/wasmReady'
 import { useProjectStore } from '@/store/projectStore'
@@ -39,6 +45,8 @@ export function StudioView() {
 
   const { ready: wasmReady } = useWasmWarmup()
   const [toast, setToast] = useState<string | null>(null)
+  const [manualExpand, setManualExpand] = useState<MillStage | null>(null)
+  const [manualExpandAt, setManualExpandAt] = useState<MillStage | null>(null)
 
   const atGate = glyph?.status === 'gate1' || glyph?.status === 'gate2'
   const busy = isGenerating || isAgentRunning || isReplaying || atGate
@@ -60,6 +68,26 @@ export function StudioView() {
     hasOutput: Boolean(output),
     hasPreview: Boolean(glyph?.previewPng),
   })
+
+  const summaryInput = {
+    glyphsLength: glyphs.length,
+    glyphStatus: glyph?.status,
+    isGenerating,
+    isAgentRunning,
+    isReplaying,
+    hasOutput: Boolean(output),
+    hasPreview: Boolean(glyph?.previewPng),
+    family: meta.family,
+    atGate,
+  }
+
+  const bayExpanded = (stage: MillStage) =>
+    activeStage === stage || (manualExpand === stage && manualExpandAt === activeStage)
+
+  const pinBay = (stage: MillStage) => {
+    setManualExpand(stage)
+    setManualExpandAt(activeStage)
+  }
 
   const handleCopyRecipe = useCallback(async () => {
     await copyRecipe()
@@ -86,21 +114,35 @@ export function StudioView() {
   ) : null
 
   return (
-    <main className="console-mill flex flex-1 flex-col gap-6">
+    <main className="console-mill flex flex-1 flex-col gap-4">
       {!wasmReady && <WasmWarmupBanner />}
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="console-mill-toolbar flex flex-wrap items-center justify-between gap-3">
         <MillStepIndicator activeStage={activeStage} />
         {statusPill}
       </div>
 
-      <Bay kicker="SOURCE" signal={activeStage === 'source'}>
+      <StageBay
+        kicker="SOURCE"
+        stage="source"
+        activeStage={activeStage}
+        expanded={bayExpanded('source')}
+        onExpand={() => pinBay('source')}
+        collapsedSummary={sourceBaySummary(summaryInput)}
+      >
         <DropZone />
         <GlyphGrid />
         {!glyph && <IdleHint />}
-      </Bay>
+      </StageBay>
 
-      <Bay kicker="BUILD" signal={activeStage === 'build'}>
+      <StageBay
+        kicker="BUILD"
+        stage="build"
+        activeStage={activeStage}
+        expanded={bayExpanded('build')}
+        onExpand={() => pinBay('build')}
+        collapsedSummary={buildBaySummary(summaryInput)}
+      >
         <div className="flex flex-wrap items-center gap-3">
           <button
             type="button"
@@ -139,26 +181,7 @@ export function StudioView() {
         </details>
 
         {glyph && (isGenerating || isReplaying) && (
-          <PipelineGraph
-            currentStep={glyph.step}
-            isActive={isGenerating || isReplaying}
-          />
-        )}
-
-        {glyph?.status === 'gate1' && glyph.gate && gateHandlers && (
-          <Gate1Panel
-            gate={glyph.gate}
-            sourcePreviewUrl={glyph.sourcePreviewUrl}
-            handlers={gateHandlers}
-          />
-        )}
-
-        {glyph?.status === 'gate2' && glyph.gate && gateHandlers && (
-          <Gate2Panel
-            gate={glyph.gate}
-            handlers={gateHandlers}
-            onAcceptExport={() => handleDownload('zip')}
-          />
+          <PipelineGraph currentStep={glyph.step} isActive={isGenerating || isReplaying} />
         )}
 
         {glyph?.status === 'exporting' && (
@@ -181,24 +204,44 @@ export function StudioView() {
             className="console-bay-nested border-l-2 p-3 text-sm"
             style={{ borderColor: 'var(--state-fail)', color: 'var(--state-fail)' }}
           >
-            <span className="console-mono-data font-medium">Pipeline failed.</span>{' '}
-            {glyph.error}
+            <span className="console-mono-data font-medium">Pipeline failed.</span> {glyph.error}
           </div>
         )}
+      </StageBay>
 
-        <PrivacyNote />
-      </Bay>
-
-      <Bay kicker="REVIEW" signal={activeStage === 'review'}>
+      <StageBay
+        kicker="REVIEW"
+        stage="review"
+        activeStage={activeStage}
+        expanded={bayExpanded('review')}
+        onExpand={() => pinBay('review')}
+        collapsedSummary={reviewBaySummary(summaryInput)}
+      >
         {glyphs.length > 0 && (
           <PartialFontWarning
-            codepoints={
-              recipe?.glyphs.map((g) => g.codepoint) ?? glyphs.map((g) => g.codepoint)
-            }
+            codepoints={recipe?.glyphs.map((g) => g.codepoint) ?? glyphs.map((g) => g.codepoint)}
           />
         )}
 
-        {glyph && glyph.status !== 'gate1' && glyph.status !== 'gate2' && (
+        <div className={atGate ? 'console-gate-slot' : undefined}>
+          {glyph?.status === 'gate1' && glyph.gate && gateHandlers && (
+            <Gate1Panel
+              gate={glyph.gate}
+              sourcePreviewUrl={glyph.sourcePreviewUrl}
+              handlers={gateHandlers}
+            />
+          )}
+
+          {glyph?.status === 'gate2' && glyph.gate && gateHandlers && (
+            <Gate2Panel
+              gate={glyph.gate}
+              handlers={gateHandlers}
+              onAcceptExport={() => handleDownload('zip')}
+            />
+          )}
+        </div>
+
+        {glyph && !atGate && (
           <PreviewPanel
             sourcePreviewUrl={glyph.sourcePreviewUrl}
             renderPreviewUrl={glyph.previewPng}
@@ -206,9 +249,22 @@ export function StudioView() {
             character={previewCharacter}
           />
         )}
-      </Bay>
 
-      <Bay kicker="EXPORT" signal={activeStage === 'export'}>
+        {glyphs.length > 0 && !glyph?.previewPng && !atGate && (
+          <p className="console-mono-data text-xs text-muted">
+            Run Generate to populate preview.
+          </p>
+        )}
+      </StageBay>
+
+      <StageBay
+        kicker="EXPORT"
+        stage="export"
+        activeStage={activeStage}
+        expanded={bayExpanded('export')}
+        onExpand={() => pinBay('export')}
+        collapsedSummary={exportBaySummary(summaryInput)}
+      >
         <ExportPanel
           family={meta.family}
           recipe={recipe}
@@ -219,7 +275,7 @@ export function StudioView() {
           onDownload={handleDownload}
           embedded
         />
-      </Bay>
+      </StageBay>
 
       <Toast message={toast} onDismiss={() => setToast(null)} />
     </main>
@@ -257,50 +313,14 @@ function ConsoleEmblem() {
   )
 }
 
-function PrivacyNote() {
-  return (
-    <aside className="text-xs leading-relaxed text-muted">
-      <p className="console-readout">Privacy</p>
-      <ul className="mt-2 list-inside list-disc space-y-0.5">
-        <li>
-          Source PNGs, SVG paths, and font bytes never leave your browser for conversion.
-        </li>
-        <li>
-          Agent mode sends render previews and text through{' '}
-          <code className="console-mono-data text-subtle">/api/agent</code> to OpenRouter for vision
-          QA — not your original artwork.
-        </li>
-        <li>
-          The proxy stores nothing. BYO keys are forwarded per request only. Recipe replay uses zero
-          model calls.
-        </li>
-      </ul>
-      <p className="mt-2">
-        <a href={routeHref('how-it-works')} className="font-medium text-subtle hover:text-ink">
-          How it works →
-        </a>
-      </p>
-    </aside>
-  )
-}
-
 function IdleHint() {
   return (
-    <div role="status" className="flex items-center gap-4 py-2">
-      <ConsoleEmblem />
-      <div className="space-y-1 text-sm">
-        <p className="console-mono-data text-xs tracking-wide text-muted uppercase">
-          awaiting source png
-        </p>
-        <p className="text-muted">
-          Upload <span className="font-medium text-ink">A-KaminoDeco.png</span> (or multiple letters
-          for a batch font). New here?{' '}
-          <a href={routeHref('how-it-works')} className="font-medium text-ink hover:underline">
-            Read how it works
-          </a>{' '}
-          — no AI required for the demo glyph.
-        </p>
-      </div>
-    </div>
+    <p className="console-mono-data text-xs text-muted">
+      Try <span className="text-ink">A-KaminoDeco.png</span> — or{' '}
+      <a href={routeHref('how-it-works')} className="font-medium text-ink hover:underline">
+        read how it works
+      </a>
+      .
+    </p>
   )
 }

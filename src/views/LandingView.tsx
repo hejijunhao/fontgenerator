@@ -1,12 +1,8 @@
+import { SectionHeading } from '@/components/layout/SectionHeading'
+import geoContent from '@/lib/geoPrerenderContent.json'
 import { routeHref } from '@/lib/navigation'
 
-const QUICK_ANSWER = [
-  'Glyphmill converts PNG letter images into installable TTF and WOFF2 fonts.',
-  'The conversion pipeline runs entirely in your browser via WASM.',
-  'An optional Claude agent tunes trace parameters; a free no-agent path exists.',
-  'Foundry — agentic glyph creation — is coming soon.',
-  'No accounts, no uploads of source PNGs for conversion.',
-] as const
+const LANDING_QUICK_ANSWER = geoContent.landingQuickAnswer
 
 const HOW_TO_STEPS = [
   { step: '1', title: 'Upload', body: 'Drop one or more PNG letter images into the Mill.' },
@@ -14,52 +10,123 @@ const HOW_TO_STEPS = [
   { step: '3', title: 'Download', body: 'Export TTF, WOFF2, or a zip bundle. Install or use on the web.' },
 ] as const
 
-const FONTFORGE_ROWS = [
-  ['Runs in browser', 'Yes', 'Desktop install'],
-  ['PNG batch upload', 'Yes', 'Manual per glyph'],
-  ['Agent parameter tuning', 'Optional', 'Manual sliders'],
-  ['Recipe replay', 'Yes', 'Manual presets'],
-  ['Privacy', 'Conversion stays local', 'Local desktop'],
+const COMPARE_HIGHLIGHTS = [
+  {
+    title: 'Runs in your browser',
+    glyphmill: 'WASM pipeline — no FontForge install',
+    manual: 'Desktop app per machine',
+  },
+  {
+    title: 'Batch PNG upload',
+    glyphmill: 'Drop A, B, C… — one font at export',
+    manual: 'Trace each glyph by hand',
+  },
+  {
+    title: 'Recipe replay',
+    glyphmill: 'Copy JSON, rebuild free later',
+    manual: 'Manual presets each time',
+  },
 ] as const
+
+function HeroProof() {
+  return (
+    <div
+      className="panel flex items-center justify-center gap-4 p-4 sm:gap-6 sm:p-6"
+      aria-label="Reference glyph before and after conversion"
+    >
+      <figure className="text-center">
+        <img
+          src="/A-KaminoDeco.png"
+          alt="Source PNG — decorative letter A on cream background"
+          width={200}
+          height={267}
+          loading="eager"
+          fetchPriority="high"
+          className="mx-auto max-h-40 w-auto rounded-lg border border-border bg-preview-frame object-contain sm:max-h-48"
+        />
+        <figcaption className="mt-2 text-xs text-muted">Source PNG</figcaption>
+      </figure>
+      <span className="text-xl text-subtle sm:text-2xl" aria-hidden>
+        →
+      </span>
+      <figure className="text-center">
+        <img
+          src="/golden/A-render.png"
+          alt="Rendered A in built font — open counter, upright on baseline"
+          width={200}
+          height={200}
+          loading="eager"
+          className="mx-auto max-h-40 w-auto rounded-lg border border-border bg-preview-frame object-contain sm:max-h-48"
+        />
+        <figcaption className="mt-2 text-xs text-muted">Built font</figcaption>
+      </figure>
+    </div>
+  )
+}
 
 export function LandingView() {
   return (
-    <main className="flex flex-1 flex-col gap-14 pb-4">
-      <section className="space-y-6 pt-2" aria-labelledby="landing-quick-answer">
-        <div className="space-y-4">
-          <p className="text-xs font-semibold tracking-[0.28em] text-subtle uppercase">
-            Browser font mill
-          </p>
-          <h1 id="landing-quick-answer" className="max-w-2xl text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-            Glyphmill is a browser tool that converts PNG letter images into installable fonts.
-          </h1>
-          <p className="max-w-prose text-base leading-relaxed text-muted">
-            Drop letter art into the Mill, trace it to vectors, assemble a real typeface, and
-            download TTF or WOFF2 — without FontForge and without uploading your artwork for
-            conversion.
-          </p>
+    <main className="landing-page flex flex-1 flex-col gap-0 pb-4">
+      <section
+        id="hero"
+        className="section-band section-band--hero -mx-6 px-6 py-12 sm:py-16"
+        aria-labelledby="landing-hero-heading"
+      >
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] lg:gap-12">
+          <div className="space-y-6">
+            <p className="text-xs font-semibold tracking-[0.28em] text-subtle uppercase">
+              Browser font mill
+            </p>
+            <h1
+              id="landing-hero-heading"
+              className="max-w-xl text-3xl font-semibold tracking-tight text-ink sm:text-4xl lg:text-[2.5rem] lg:leading-tight"
+            >
+              Glyphmill is a browser tool that converts PNG letter images into installable fonts.
+            </h1>
+            <p className="max-w-prose text-base leading-relaxed text-muted">
+              Drop letter art into the Mill, trace it to vectors, assemble a real typeface, and
+              download TTF or WOFF2 — without FontForge and without uploading your artwork for
+              conversion.
+            </p>
+            <div className="flex flex-wrap items-center gap-4">
+              <a href={routeHref('mill')} className="btn-primary">
+                Try with sample letter A
+              </a>
+              <a
+                href={routeHref('how-it-works')}
+                className="text-sm font-medium text-muted underline-offset-2 transition-colors hover:text-ink hover:underline"
+              >
+                How it works →
+              </a>
+            </div>
+          </div>
+
+          <HeroProof />
         </div>
 
-        <ol className="panel max-w-prose list-decimal space-y-2 px-5 py-4 pl-8 text-sm leading-relaxed text-muted">
-          {QUICK_ANSWER.map((line) => (
-            <li key={line}>{line}</li>
-          ))}
-        </ol>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <a href={routeHref('mill')} className="btn-primary">
-            Open Mill
-          </a>
-          <a href={routeHref('how-it-works')} className="btn-secondary">
-            How it works
-          </a>
-        </div>
+        <details className="panel mt-8 max-w-prose">
+          <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-muted marker:content-none [&::-webkit-details-marker]:hidden">
+            Quick answers
+          </summary>
+          <ol className="list-decimal space-y-2 border-t border-border px-5 py-4 pl-8 text-sm leading-relaxed text-muted">
+            {LANDING_QUICK_ANSWER.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ol>
+        </details>
       </section>
 
-      <section className="space-y-5" aria-labelledby="proof-heading">
-        <h2 id="proof-heading" className="text-xl font-semibold tracking-tight text-ink">
-          Proof on the reference glyph
-        </h2>
+      <section
+        id="proof"
+        className="landing-section mt-16 space-y-6"
+        aria-labelledby="proof-heading"
+      >
+        <SectionHeading
+          id="proof-heading"
+          kicker="Proof"
+          title="Reference glyph A-KaminoDeco"
+          lead="Decorative capital A on cream — open counter, upright on baseline. The pinned no-agent recipe still uses these Phase 0 parameters."
+        />
         <div className="panel flex flex-col items-center gap-6 p-6 sm:flex-row sm:justify-center">
           <figure className="text-center">
             <img
@@ -67,8 +134,7 @@ export function LandingView() {
               alt="Source PNG — decorative letter A on cream background"
               width={280}
               height={373}
-              loading="eager"
-              fetchPriority="high"
+              loading="lazy"
               className="mx-auto rounded-lg border border-border bg-preview-frame"
             />
             <figcaption className="mt-2 text-xs text-muted">Source PNG</figcaption>
@@ -85,31 +151,34 @@ export function LandingView() {
               loading="lazy"
               className="mx-auto rounded-lg border border-border bg-preview-frame"
             />
-            <figcaption className="mt-2 text-xs text-muted">
-              Open counter, on baseline
-            </figcaption>
+            <figcaption className="mt-2 text-xs text-muted">Open counter, on baseline</figcaption>
           </figure>
         </div>
-        <p className="text-sm text-muted">
-          Try it: open the Mill and drop <span className="font-medium text-ink">A-KaminoDeco.png</span>{' '}
-          from the repo — no API key required.
-        </p>
       </section>
 
-      <section className="space-y-5" aria-labelledby="chambers-heading">
-        <h2 id="chambers-heading" className="text-xl font-semibold tracking-tight text-ink">
-          Two chambers
-        </h2>
+      <section
+        id="chambers"
+        className="landing-section mt-16 space-y-6"
+        aria-labelledby="chambers-heading"
+      >
+        <SectionHeading
+          id="chambers-heading"
+          kicker="Platform"
+          title="Two chambers"
+          lead="Sketch in the Foundry (coming soon). Convert in the Mill (live today)."
+        />
         <div className="grid gap-4 sm:grid-cols-2">
           <article className="panel space-y-3 p-5">
-            <p className="text-xs font-semibold tracking-[0.2em] text-subtle uppercase">Mill</p>
+            <p className="text-xs font-semibold tracking-[0.2em] text-subtle uppercase">Mill · Live</p>
             <h3 className="text-base font-semibold text-ink">Convert artwork to fonts</h3>
             <p className="text-sm leading-relaxed text-muted">
-              Upload PNG glyphs, run preprocess → trace → place → build, export TTF / WOFF2. Live
-              today.
+              Upload PNG glyphs, run preprocess → trace → place → build, export TTF / WOFF2.
             </p>
-            <a href={routeHref('mill')} className="btn-primary inline-block text-sm">
-              Open Mill
+            <a
+              href={routeHref('mill')}
+              className="inline-block text-sm font-medium text-ink underline-offset-2 hover:underline"
+            >
+              Open Mill →
             </a>
           </article>
           <article className="inert-frame space-y-3 p-5">
@@ -118,52 +187,61 @@ export function LandingView() {
             </p>
             <h3 className="text-base font-semibold text-ink">Sketch letterforms first</h3>
             <p className="text-sm leading-relaxed text-muted">
-              Agentic style exploration and glyph grids, then one-click handoff to the Mill. Not
-              available yet — see the planned workflow.
+              Agentic style exploration and glyph grids, then handoff to the Mill. Not available yet.
             </p>
-            <a href={routeHref('foundry')} className="btn-secondary inline-block text-sm">
-              Foundry placeholder
+            <a
+              href={routeHref('foundry')}
+              className="inline-block text-sm font-medium text-muted underline-offset-2 hover:text-ink hover:underline"
+            >
+              See planned workflow →
             </a>
           </article>
         </div>
       </section>
 
-      <section className="space-y-5" aria-labelledby="compare-heading">
-        <h2 id="compare-heading" className="text-xl font-semibold tracking-tight text-ink">
-          Glyphmill vs manual FontForge workflow
-        </h2>
-        <div className="panel overflow-x-auto">
-          <table className="w-full min-w-[28rem] text-left text-sm">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="px-4 py-3 font-semibold text-ink" scope="col">
-                  Capability
-                </th>
-                <th className="px-4 py-3 font-semibold text-ink" scope="col">
-                  Glyphmill
-                </th>
-                <th className="px-4 py-3 font-semibold text-ink" scope="col">
-                  FontForge manual
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {FONTFORGE_ROWS.map(([cap, gm, ff]) => (
-                <tr key={cap} className="border-b border-border last:border-0">
-                  <td className="px-4 py-3 text-muted">{cap}</td>
-                  <td className="px-4 py-3 text-ink">{gm}</td>
-                  <td className="px-4 py-3 text-muted">{ff}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <section
+        id="compare"
+        className="section-band section-band--muted landing-section -mx-6 mt-16 px-6 py-12"
+        aria-labelledby="compare-heading"
+      >
+        <div className="space-y-6">
+          <SectionHeading
+            id="compare-heading"
+            kicker="Alternatives"
+            title="Glyphmill vs manual FontForge"
+            lead="A few reasons teams pick the browser mill over desktop outline editing."
+          />
+          <ul className="grid gap-3 sm:grid-cols-3">
+            {COMPARE_HIGHLIGHTS.map((item) => (
+              <li key={item.title} className="panel space-y-2 p-5">
+                <h3 className="text-sm font-semibold text-ink">{item.title}</h3>
+                <p className="text-sm text-ink">{item.glyphmill}</p>
+                <p className="text-xs text-muted">{item.manual}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="text-sm text-muted">
+            <a
+              href={`${routeHref('how-it-works')}#fontforge-heading`}
+              className="font-medium text-ink underline-offset-2 hover:underline"
+            >
+              See full comparison table →
+            </a>
+          </p>
         </div>
       </section>
 
-      <section className="space-y-5" aria-labelledby="howto-heading">
-        <h2 id="howto-heading" className="text-xl font-semibold tracking-tight text-ink">
-          Three steps
-        </h2>
+      <section
+        id="steps"
+        className="landing-section mt-16 space-y-6"
+        aria-labelledby="howto-heading"
+      >
+        <SectionHeading
+          id="howto-heading"
+          kicker="Workflow"
+          title="Three steps"
+          lead="From PNG art to installable font files in the Mill console."
+        />
         <ol className="grid gap-3 sm:grid-cols-3">
           {HOW_TO_STEPS.map((item) => (
             <li key={item.step} className="panel p-5">
@@ -175,17 +253,25 @@ export function LandingView() {
         </ol>
       </section>
 
-      <section className="panel flex flex-col items-start gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-ink">Ready to mill a font?</p>
-          <p className="text-sm text-muted">
-            Drop <span className="font-medium text-ink">A-KaminoDeco.png</span> and hit Generate. No
-            API key required.
-          </p>
+      <section
+        id="cta"
+        className="section-band callout landing-section -mx-6 mt-16 px-6 py-10"
+        aria-labelledby="cta-heading"
+      >
+        <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-1">
+            <h2 id="cta-heading" className="text-lg font-semibold text-ink">
+              Ready to mill a font?
+            </h2>
+            <p className="text-sm text-muted">
+              Drop <span className="font-medium text-ink">A-KaminoDeco.png</span> in the Mill and hit
+              Generate. No API key required.
+            </p>
+          </div>
+          <a href={routeHref('mill')} className="btn-primary shrink-0">
+            Try with sample letter A
+          </a>
         </div>
-        <a href={routeHref('mill')} className="btn-primary shrink-0">
-          Open Mill
-        </a>
       </section>
     </main>
   )

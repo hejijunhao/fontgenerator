@@ -23,22 +23,19 @@ export function GlyphGrid() {
       : null
 
   return (
-    <section className="panel p-4">
+    <section className="console-bay-nested space-y-3 p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="panel-heading">Glyphs ({glyphs.length})</h2>
-        <p className="text-xs text-muted">Codepoints assigned A, B, C… by upload order</p>
+        <p className="console-readout">Glyphs ({glyphs.length})</p>
+        <p className="console-mono-data text-xs text-muted">A, B, C… by upload order</p>
       </div>
 
       {recipeMismatch && (
-        <p
-          role="alert"
-          className="mt-3 rounded-lg border border-amber-300/50 bg-amber-50 px-3 py-2 text-xs text-amber-950 dark:border-amber-500/30 dark:bg-amber-950/35 dark:text-amber-100"
-        >
+        <p role="alert" className="console-alert-warn px-3 py-2 text-xs">
           {recipeMismatch}
         </p>
       )}
 
-      <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
         {glyphs.map((glyph, index) => (
           <li
             key={glyph.id}
@@ -63,7 +60,7 @@ export function GlyphGrid() {
                   type="button"
                   aria-label={`Remove glyph ${String.fromCodePoint(glyph.codepoint)}`}
                   onClick={() => removeGlyph(glyph.id)}
-                  className="shrink-0 rounded-md px-1.5 py-0.5 text-xs text-muted hover:bg-red-50 hover:text-red-800 dark:hover:bg-red-950/50 dark:hover:text-red-200"
+                  className="shrink-0 rounded-md px-1.5 py-0.5 text-xs text-muted transition-colors hover:text-[var(--state-fail)]"
                 >
                   Remove
                 </button>

@@ -6,6 +6,7 @@ All notable changes to Glyphmill are documented here. The format is based on
 
 ## Index
 
+- **[0.6.0](#060--2026-07-02)** — UI/UX polish pass (Phases UI-P1–P4): shell stability, landing sections, Mill micro-UX, design system
 - **[0.5.1](#051--2026-07-02)** — Post-review hardening: shared GEO content, path redirects, build-time sitemap
 - **[0.5.0](#050--2026-07-02)** — v2.0: GEO pillar, per-route OG images, platform evolution complete
 - **[0.4.1](#041--2026-07-02)** — v2 Phase 3: Foundry placeholder at `/foundry`
@@ -15,6 +16,184 @@ All notable changes to Glyphmill are documented here. The format is based on
 - **[0.2.0](#020--2026-07-02)** — Glyphmill rebrand, light/dark mode, polished UI shell
 - **[0.1.1](#011--2026-07-02)** — CI hardening, lint fixes, repo hygiene
 - **[0.1.0](#010--2026-07-01)** — Initial v1: browser PNG → font pipeline with optional agent
+
+---
+
+## [0.6.0] — 2026-07-02
+
+**UI/UX polish pass** — four focused phases from
+[ui-ux-polish-review.md](executing/ui-ux-polish-review.md). UI-only; pipeline, agent, store, and
+export behaviour unchanged.
+
+### Why
+
+v2.0 shipped the right information architecture (Landing · Foundry · Mill · How it works) and a
+credible Monument/Console split, but the product still felt glitchy on route changes, read as one
+long document on marketing pages, and scrolled like an endless form in the Mill. This release
+closes the highest-leverage polish items: stable shell geometry, landing section rhythm, stage-aware
+Mill layout, and incremental Kamino design-system alignment.
+
+### Phase UI-P1 — Shell stability
+
+Eliminates header height shift and content jump when switching Foundry ↔ Mill ↔ Landing ↔ How it
+works.
+
+**Added**
+
+- **`ThemeToggle` `locked` prop** — on `/mill`, renders a reserved `36×36` lock icon (same box as
+  the interactive toggle) with tooltip/aria explaining the console uses a fixed dark surface
+- **Tailwind scoped dark variant** — `@custom-variant dark (&:where(.dark, .dark *))` in
+  `index.css` so Mill `dark:` utilities apply under `.console-root.dark` without mutating
+  `<html class="dark">`
+- **E2E** — `header height stable across routes` (desktop `1280×720`; variance ≤ 2px across `/`,
+  `/foundry`, `/mill`, `/how-it-works`)
+
+**Changed**
+
+- **`AppHeader`** — stable header grid: logo link is mark + wordmark only; tagline decoupled into a
+  fixed `h-10` slot (`line-clamp-2`); invisible spacer on Foundry/How it works; primary row fixed
+  `h-12`; theme toggle always mounted; `app-header` class for measurement; uniform `py-4`
+- **`App.tsx`** — Mill wrapper `className="console-root dark"` (scoped console surface)
+- **`PageShell`** — unified vertical padding `py-8` on Monument and Mill (was `py-10` / `py-6`)
+- **`useAppRoute`** — `behavior: 'instant'` scroll on all route changes (no smooth scroll on SPA nav)
+- **`index.css`** — `background-color 200ms ease` on `.console-root`; `prefers-reduced-motion`
+  disables transition
+
+**Removed**
+
+- **`useMillConsoleTheme.ts`** — deleted; no longer toggles global `html.dark` on Mill entry/exit
+
+### Phase UI-P2 — Landing section architecture
+
+Landing reads as a designed marketing page with clear visual chapters — not one long readme.
+
+**Added**
+
+- **`SectionHeading`** (`src/components/layout/SectionHeading.tsx`) — shared kicker/title/lead
+  pattern extracted from How it works
+- **Landing section map** (`LandingView.tsx`) — six anchored sections with distinct surfaces:
+  - `#hero` — `.section-band--hero`; product-first two-column layout (copy + inline proof thumbnails
+    on `lg+`)
+  - `#proof` — full-size before/after reference glyph
+  - `#chambers` — Mill (live) vs Foundry (inert) cards
+  - `#compare` — `.section-band--muted`; three summary highlight cards (not full table)
+  - `#steps` — three-step workflow grid
+  - `#cta` — `.callout` conversion band
+- **Section band utilities** (`index.css`) — `.section-band`, `.section-band--hero`,
+  `.section-band--muted`, `.landing-section` (`scroll-mt-24`)
+- **Collapsible Quick Answer** — `<details>` “Quick answers” below hero; bullets from
+  `geoPrerenderContent.json` `landingQuickAnswer` (GEO strings stay in DOM, collapsed for humans)
+- **E2E** — `landing has distinct section chapters` (section IDs, band classes, compare deep link,
+  Quick answers details)
+
+**Changed**
+
+- **`LandingView`** — primary CTA **“Try with sample letter A”** (hero + final band); secondary
+  **“How it works →”** as text link; chambers use text link **“Open Mill →”** (two primary CTAs
+  total, down from four identical “Open Mill” buttons)
+- **Compare dedupe (F-15)** — full FontForge table removed from landing; canonical table stays on
+  `/how-it-works`; landing links **“See full comparison table →”** to `#fontforge-heading`
+- **`HowItWorksView`** — imports shared `SectionHeading`; `id="fontforge-heading"` on comparison
+  section
+
+### Phase UI-P3 — Mill micro-UX
+
+Mill feels like a stage-aware instrument panel — not a long scrolling form — with stable layout
+during gates and generation.
+
+**Added**
+
+- **`StageBay`** (`src/components/console/StageBay.tsx`) — inactive bays collapse to a one-line
+  mono summary strip; `+` expands; active stage always expanded; manual pin scoped to current
+  `activeStage` (auto-invalidates on pipeline advance)
+- **`millBaySummaries.ts`** — pure collapsed-summary strings per bay and pipeline state
+- **`.console-gate-slot`** — reserved `min-height: 26rem` when gates are open
+- **`.console-mill-toolbar`** — sticky stage indicator row below header (`top: 8.5rem` desktop,
+  `11.75rem` mobile) with obsidian backdrop
+- **`.console-alert-warn`** — console-native warn styling (`--state-warn`)
+- **Unit tests** — `millBaySummaries.test.ts` (4 cases); `millStage.test.ts` +1 case
+- **E2E** — `mill collapses inactive stage bays`; upload assertion updated to collapsed SOURCE
+  summary button
+
+**Changed**
+
+- **`StudioView`** — four bays use `StageBay`; Gate 1/2 panels moved from BUILD to REVIEW bay;
+  privacy essay removed from BUILD; idle hint shortened to one line + link
+- **`millStage.ts`** — glyphs loaded but not yet generated → stage **`build`** (was `source`) so
+  Generate stays visible when SOURCE collapses
+- **`PreviewPanel`** — `console-bay-nested` grammar; removed bay-in-panel `.panel` nesting
+- **`GlyphGrid`**, **`PartialFontWarning`** — `.console-alert-warn` and console nested shells (no
+  Monument amber)
+- **`Gate1Panel`** — `min-h-[24rem]`; **`Gate2Panel`** — `min-h-[20rem]`
+- **`AppHeader`** — `sticky top-0 z-30` on all routes
+- **`AppFooter`** — Mill route: one-line privacy + “Privacy details →” link to How it works
+- **`consoleTheme.css`** — toolbar, gate slot, alerts, collapsed-bay hover
+
+**Removed**
+
+- **`ProgressSteps.tsx`** — deleted (unused since console `PipelineGraph`)
+
+### Phase UI-P4 — Design system alignment
+
+Closes incremental Kamino gaps: unified Plex family, registration brackets, Foundry clarity, nav
+IA, accurate scoped-theme copy.
+
+**Added**
+
+- **IBM Plex Sans on Monument** — Google Fonts loads Plex Sans (400/500/600) + Plex Mono; Inter
+  removed; `--font-sans: 'IBM Plex Sans'`
+- **Registration corner brackets** — `.console-bay:not(.console-bay-nested)::after` draws 12px
+  L-brackets at four corners (CSS only; nested bays excluded)
+- **Console grain + vignette** — `.console-root::before` fixed SVG noise (~3.5% opacity);
+  `::after` radial edge darkening; `isolation: isolate` stacking
+- **Foundry status banner** — `.status-banner-inert` full-width hatched strip: “Not available —
+  Mill is live today” with Open Mill link
+- **`AppNavLink` `muted` prop** — de-emphasizes inert routes (`opacity-75`, `text-subtle`)
+- **E2E** — foundry status banner assertions; `primary nav prioritizes Mill and de-emphasizes
+  Foundry`; `mill primary bays wear registration brackets`
+
+**Changed**
+
+- **`AppHeader`** nav order — **Mill · How it works · Foundry** (desktop + mobile); Foundry link
+  `muted` with **Soon** badge
+- **`FoundryPlaceholderView`** — status banner at page top (`-mx-6 px-6` bleed)
+- **`geoPrerenderContent.json`** — Mill FAQ answer: scoped dark surface on `/mill` (no longer
+  “forces dark theme”); names IBM Plex Sans for prose
+
+### Tests (end state)
+
+| Suite | Count | Notes |
+|-------|-------|-------|
+| Vitest (unit + browser) | 45 | +5 vs 0.5.1 (`millBaySummaries`, `millStage` case) |
+| Playwright e2e | 18 | +5 vs 0.5.1 (header stability, landing chapters, bay collapse, nav IA, brackets) |
+
+```bash
+npm run typecheck && npm run lint && npm test && npm run test:e2e  # all green
+```
+
+### Unchanged (by design)
+
+- Pipeline, agent loop, proxy, store, export, recipes — no functional changes
+- Prerender scripts and OG image generation (regenerate OG post-deploy optional)
+- Live KaminoDeco `@font-face` in hero — deferred (optional polish)
+
+### Deferred / out of scope
+
+- Route cross-fade on main content
+- Header chamfer clip (Kamino §2.2)
+- Live font preview in hero via bundled TTF
+- Merge `MillStepIndicator` + `PipelineGraph` into one component
+
+### Completion notes
+
+| Phase | Doc |
+|-------|-----|
+| UI-P1 Shell stability | [phase-ui-p1-shell-stability.md](completions/phase-ui-p1-shell-stability.md) |
+| UI-P2 Landing sections | [phase-ui-p2-landing-sections.md](completions/phase-ui-p2-landing-sections.md) |
+| UI-P3 Mill micro-UX | [phase-ui-p3-mill-micro-ux.md](completions/phase-ui-p3-mill-micro-ux.md) |
+| UI-P4 Design system | [phase-ui-p4-design-system.md](completions/phase-ui-p4-design-system.md) |
+
+Upstream spec: [ui-ux-polish-review.md](executing/ui-ux-polish-review.md).
 
 ---
 

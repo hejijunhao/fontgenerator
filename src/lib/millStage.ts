@@ -49,5 +49,7 @@ export function deriveMillStage(input: DeriveMillStageInput): MillStage {
 
   if (hasOutput) return 'export'
 
+  if (glyphsLength > 0) return 'build'
+
   return 'source'
 }

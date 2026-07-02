@@ -69,7 +69,7 @@
     },
     {
       "q": "How does the Mill console workflow work?",
-      "a": "The Mill at /mill uses four staged instrument bays: SOURCE for PNG upload and glyph grid, BUILD for generate/agent actions and gates, REVIEW for preview and warnings, EXPORT for downloads and recipe copy. A step indicator tracks Source, Build, Review, Export. Mono readouts carry metrics and log lines; prose stays in sans. The console forces dark theme and loads about 1.2 MB of WASM on first visit."
+      "a": "The Mill at /mill uses four staged instrument bays: SOURCE for PNG upload and glyph grid, BUILD for generate/agent actions and gates, REVIEW for preview and warnings, EXPORT for downloads and recipe copy. A step indicator tracks Source, Build, Review, Export. Mono readouts carry metrics and log lines; prose stays in IBM Plex Sans. The console uses a scoped dark surface on /mill without changing your Monument theme preference, and loads about 1.2 MB of WASM on first visit."
     },
     {
       "q": "What is the Foundry chamber?",

@@ -1,3 +1,4 @@
+import { SectionHeading } from '@/components/layout/SectionHeading'
 import {
   FAQ,
   FONTFORGE_ROWS,
@@ -155,6 +156,7 @@ export function HowItWorksView() {
 
       <section className="space-y-5" aria-labelledby="fontforge-heading">
         <SectionHeading
+          id="fontforge-heading"
           kicker="Alternatives"
           title="Glyphmill vs manual FontForge workflow"
           lead="For teams comparing browser tooling to desktop outline editing."
@@ -235,28 +237,6 @@ export function HowItWorksView() {
         </a>
       </section>
     </main>
-  )
-}
-
-function SectionHeading({
-  kicker,
-  title,
-  lead,
-  id,
-}: {
-  kicker: string
-  title: string
-  lead?: string
-  id?: string
-}) {
-  return (
-    <header className="space-y-2">
-      <p className="text-xs font-semibold tracking-[0.2em] text-subtle uppercase">{kicker}</p>
-      <h2 id={id} className="text-xl font-semibold tracking-tight text-ink">
-        {title}
-      </h2>
-      {lead && <p className="max-w-prose text-sm leading-relaxed text-muted">{lead}</p>}
-    </header>
   )
 }
 

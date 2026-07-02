@@ -43,6 +43,19 @@ describe('deriveMillStage', () => {
     ).toBe('review')
   })
 
+  it('returns build when glyphs loaded but not yet generated', () => {
+    expect(
+      deriveMillStage({
+        glyphsLength: 1,
+        isGenerating: false,
+        isAgentRunning: false,
+        isReplaying: false,
+        hasOutput: false,
+        hasPreview: false,
+      }),
+    ).toBe('build')
+  })
+
   it('returns export when done with output', () => {
     expect(
       deriveMillStage({

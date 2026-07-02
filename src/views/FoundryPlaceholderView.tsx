@@ -5,6 +5,22 @@ const GLYPH_PLACEHOLDERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K
 export function FoundryPlaceholderView() {
   return (
     <main className="flex flex-1 flex-col gap-10 pb-4">
+      <div className="status-banner-inert -mx-6 px-6" role="status">
+        <p className="text-muted">
+          <span className="font-medium text-ink">Not available</span> — Mill is live today.{' '}
+          <a
+            href={routeHref('mill')}
+            className="font-medium text-ink underline-offset-2 hover:underline"
+            onClick={(e) => {
+              e.preventDefault()
+              navigate('mill')
+            }}
+          >
+            Open Mill →
+          </a>
+        </p>
+      </div>
+
       <section className="space-y-5 pt-2" aria-labelledby="foundry-heading">
         <div className="space-y-4">
           <p className="text-xs font-semibold tracking-[0.28em] text-subtle uppercase">

@@ -1,58 +1,59 @@
 import { AppNavLink } from '@/components/AppNavLink'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { useAppRoute } from '@/hooks/useAppRoute'
-import { navigate, routeHref } from '@/lib/navigation'
+import { navigate, routeHref, type AppRoute } from '@/lib/navigation'
+
+const TAGLINES: Partial<Record<AppRoute, string>> = {
+  landing: 'PNG letter art in. Installable fonts out.',
+  mill: 'Turn letter images into production-ready fonts — in your browser.',
+}
 
 export function AppHeader() {
   const route = useAppRoute()
-
-  const tagline =
-    route === 'mill'
-      ? 'Turn letter images into production-ready fonts — in your browser.'
-      : route === 'landing'
-        ? 'PNG letter art in. Installable fonts out.'
-        : null
+  const tagline = TAGLINES[route]
 
   return (
-    <header className="border-b border-border bg-canvas/90 backdrop-blur-sm">
-      <div className="mx-auto max-w-6xl px-6 py-6">
-        <div className="flex items-start justify-between gap-4">
+    <header className="app-header sticky top-0 z-30 border-b border-border bg-canvas/90 backdrop-blur-sm">
+      <div className="mx-auto max-w-6xl px-6 py-4">
+        <div className="app-header__primary flex h-12 items-center justify-between gap-4">
           <a
             href={routeHref('landing')}
             onClick={(e) => {
               e.preventDefault()
               navigate('landing')
             }}
-            className="group min-w-0 space-y-2.5"
+            className="group flex min-w-0 items-center gap-3"
           >
-            <div className="flex items-center gap-3">
-              <GlyphMark />
-              <span className="font-sans text-[0.8125rem] font-semibold tracking-[0.38em] text-ink transition-opacity group-hover:opacity-80">
-                GLYPHMILL
-              </span>
-            </div>
-            {tagline && (
-              <p className="max-w-md text-[0.9375rem] leading-relaxed text-muted">{tagline}</p>
-            )}
+            <GlyphMark />
+            <span className="font-sans text-[0.8125rem] font-semibold tracking-[0.38em] text-ink transition-opacity group-hover:opacity-80">
+              GLYPHMILL
+            </span>
           </a>
 
           <div className="flex shrink-0 items-center gap-2">
             <nav aria-label="Primary" className="hidden items-center gap-1 sm:flex">
-              <AppNavLink route="foundry" active={route === 'foundry'} badge="Soon" />
               <AppNavLink route="mill" active={route === 'mill'} />
               <AppNavLink route="how-it-works" active={route === 'how-it-works'} />
+              <AppNavLink route="foundry" active={route === 'foundry'} badge="Soon" muted />
             </nav>
-            {route !== 'mill' && <ThemeToggle />}
+            <ThemeToggle locked={route === 'mill'} />
           </div>
         </div>
 
+        <p
+          className="app-header__tagline mt-2 h-10 max-w-md overflow-hidden text-[0.9375rem] leading-5 text-muted line-clamp-2"
+          aria-hidden={tagline == null}
+        >
+          {tagline ?? <span className="invisible select-none" aria-hidden>·</span>}
+        </p>
+
         <nav
           aria-label="Primary mobile"
-          className="mt-4 flex flex-wrap items-center gap-1 sm:hidden"
+          className="app-header__mobile mt-2 flex h-10 flex-wrap items-center gap-1 sm:hidden"
         >
-          <AppNavLink route="foundry" active={route === 'foundry'} badge="Soon" />
           <AppNavLink route="mill" active={route === 'mill'} />
           <AppNavLink route="how-it-works" active={route === 'how-it-works'} />
+          <AppNavLink route="foundry" active={route === 'foundry'} badge="Soon" muted />
         </nav>
       </div>
     </header>

@@ -160,7 +160,7 @@ Example: [`tests/fixtures/kamino-deco-recipe.json`](tests/fixtures/kamino-deco-r
 ```bash
 npm run dev           # local app + /api/agent proxy
 npm run build         # production build
-npm run ci            # build + lint + 53 tests (40 Vitest + 13 Playwright)
+npm run ci            # build + lint + 63 tests (45 Vitest + 18 Playwright)
 npm run test:e2e      # UI smoke only
 ```
 

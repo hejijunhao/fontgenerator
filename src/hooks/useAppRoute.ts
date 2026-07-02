@@ -44,7 +44,7 @@ export function useAppRoute(): AppRoute {
   }, [])
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: route === 'how-it-works' ? 'smooth' : 'auto' })
+    window.scrollTo({ top: 0, behavior: 'instant' })
   }, [route])
 
   return route

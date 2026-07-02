@@ -10,9 +10,11 @@ type AppNavLinkProps = {
   route: AppRoute
   active: boolean
   badge?: string
+  /** De-emphasize inert / coming-soon routes without hiding them. */
+  muted?: boolean
 }
 
-export function AppNavLink({ route, active, badge }: AppNavLinkProps) {
+export function AppNavLink({ route, active, badge, muted }: AppNavLinkProps) {
   const href = routeHref(route)
 
   return (
@@ -28,7 +30,9 @@ export function AppNavLink({ route, active, badge }: AppNavLinkProps) {
         'inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium tracking-wide uppercase transition-colors',
         active
           ? 'bg-accent text-accent-fg'
-          : 'text-muted hover:bg-surface-hover hover:text-ink',
+          : muted
+            ? 'text-subtle opacity-75 hover:bg-surface-hover hover:text-muted'
+            : 'text-muted hover:bg-surface-hover hover:text-ink',
       ].join(' ')}
     >
       {routeLabel(route)}

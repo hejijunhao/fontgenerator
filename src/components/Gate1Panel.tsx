@@ -13,7 +13,10 @@ export function Gate1Panel({ gate, sourcePreviewUrl, handlers }: Gate1PanelProps
   const [character, setCharacter] = useState(gate.proposedCharacter)
 
   return (
-    <section className="console-gate space-y-4 p-5" aria-label="Gate 1 — trace review">
+    <section
+      className="console-gate min-h-[24rem] space-y-4 p-5"
+      aria-label="Gate 1 — trace review"
+    >
       <header className="space-y-1">
         <p className="console-gate-label">Gate 1 — Trace review</p>
         <p className="text-sm text-muted">{gate.summary}</p>
