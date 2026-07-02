@@ -91,4 +91,64 @@ body {
     content: '';
     @apply pointer-events-none absolute inset-y-0 left-0 w-1 bg-accent;
   }
+
+  /* Kamino inert / coming-soon — ghost ring + hatched fill (§5.7) */
+  .inert-frame {
+    @apply rounded-2xl border border-border-strong;
+    background-color: var(--color-surface);
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 5px,
+      rgb(26 26 24 / 0.035) 5px,
+      rgb(26 26 24 / 0.035) 6px
+    );
+  }
+
+  html.dark .inert-frame {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 5px,
+      rgb(255 255 255 / 0.04) 5px,
+      rgb(255 255 255 / 0.04) 6px
+    );
+  }
+
+  .inert-panel {
+    @apply rounded-xl border border-dashed border-border-strong bg-surface-muted/60;
+  }
+
+  .inert-wire {
+    @apply rounded-lg border border-dashed border-border bg-surface-strong/50;
+  }
+
+  .inert-cell {
+    @apply rounded-md border border-dashed border-border bg-surface-strong/40;
+  }
+
+  .inert-action {
+    @apply border border-border-strong bg-surface-muted/80;
+  }
+
+  .badge-inert {
+    @apply rounded px-1 py-0.5 text-[0.625rem] font-semibold tracking-wider normal-case text-subtle ring-1 ring-border-strong;
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 3px,
+      rgb(26 26 24 / 0.06) 3px,
+      rgb(26 26 24 / 0.06) 4px
+    );
+  }
+
+  html.dark .badge-inert {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 3px,
+      rgb(255 255 255 / 0.07) 3px,
+      rgb(255 255 255 / 0.07) 4px
+    );
+  }
 }

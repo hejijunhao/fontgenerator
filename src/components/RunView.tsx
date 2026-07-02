@@ -33,10 +33,10 @@ export function RunView({ steps, isRunning, usageNote }: RunViewProps) {
   if (steps.length === 0 && !isRunning) return null
 
   return (
-    <section className="panel space-y-3 p-5">
+    <section className="console-bay-nested space-y-3 p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="panel-heading">Agent run</h2>
-        <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
+        <h2 className="console-readout">Agent run</h2>
+        <div className="console-mono-data flex flex-wrap items-center gap-2 text-xs text-muted">
           {runStarted != null && (
             <AgentElapsed
               key={runStarted}
@@ -57,14 +57,14 @@ export function RunView({ steps, isRunning, usageNote }: RunViewProps) {
           return (
             <li
               key={`${step.timestamp}-${step.tool}-${index}`}
-              className="flex gap-3 rounded-xl border border-border bg-surface-muted px-3 py-2.5 text-sm"
+              className="flex gap-3 border border-border bg-surface-muted px-3 py-2.5 text-sm"
             >
               <span className="w-5 shrink-0 pt-0.5 text-xs font-medium text-muted">
                 {index + 1}
               </span>
               <div className="min-w-0 flex-1 space-y-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-medium text-ink">{step.tool}</span>
+                  <span className="console-mono-data font-medium text-ink">{step.tool}</span>
                   <span className="text-xs text-muted">{labelForTool(step.tool)}</span>
                   {duration != null && (
                     <span className="text-xs text-muted">+{formatStepDuration(duration)}</span>
@@ -110,7 +110,7 @@ export function RunView({ steps, isRunning, usageNote }: RunViewProps) {
       )}
 
       {usageNote && (
-        <p className="text-xs text-muted">
+        <p className="console-mono-data text-xs text-muted">
           Tokens: {usageNote.totalTokens ?? '—'}
           {usageNote.cacheReadTokens != null && usageNote.cacheReadTokens > 0
             ? ` · cache read: ${usageNote.cacheReadTokens}`

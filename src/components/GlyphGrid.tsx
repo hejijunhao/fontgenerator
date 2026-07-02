@@ -42,7 +42,7 @@ export function GlyphGrid() {
         {glyphs.map((glyph, index) => (
           <li
             key={glyph.id}
-            className="group relative overflow-hidden rounded-xl border border-border bg-surface-muted"
+            className="group relative overflow-hidden border border-border bg-surface-muted"
           >
             <div className="flex aspect-square items-center justify-center bg-preview p-2">
               <img
@@ -52,7 +52,7 @@ export function GlyphGrid() {
               />
             </div>
             <div className="flex items-center justify-between gap-1 border-t border-border bg-surface-strong px-2 py-1.5">
-              <span className="truncate text-xs font-medium text-subtle">
+              <span className="console-mono-data truncate text-xs font-medium text-subtle">
                 {String.fromCodePoint(glyph.codepoint)}
                 <span className="ml-1 font-normal text-muted">
                   U+{glyph.codepoint.toString(16).toUpperCase().padStart(4, '0')}

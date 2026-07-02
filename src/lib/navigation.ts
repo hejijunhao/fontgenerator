@@ -1,17 +1,78 @@
-export type AppRoute = 'studio' | 'how-it-works'
+export type AppRoute = 'landing' | 'foundry' | 'mill' | 'how-it-works'
 
-export function parseRoute(hash: string): AppRoute {
-  const normalized = hash.replace(/^#/, '')
-  if (normalized === '/how-it-works' || normalized === 'how-it-works') {
-    return 'how-it-works'
-  }
-  return 'studio'
+const ROUTE_PATHS: Record<AppRoute, string> = {
+  landing: '/',
+  foundry: '/foundry',
+  mill: '/mill',
+  'how-it-works': '/how-it-works',
+}
+
+const PATH_TO_ROUTE = new Map<string, AppRoute>(
+  Object.entries(ROUTE_PATHS).map(([route, path]) => [path, route as AppRoute]),
+)
+
+/** Normalize pathname; unknown paths map to landing. */
+export function parsePath(pathname: string): AppRoute {
+  const normalized = pathname.replace(/\/+$/, '') || '/'
+  return PATH_TO_ROUTE.get(normalized) ?? 'landing'
+}
+
+/** Legacy v0.x paths that should redirect to a canonical route. */
+const LEGACY_PATH_REDIRECTS: Record<string, AppRoute> = {
+  '/studio': 'mill',
+}
+
+/**
+ * Canonical path when the current URL should be replaced — legacy aliases and soft 404s.
+ * Returns null when the pathname already maps to a known route.
+ */
+export function resolvePathRedirect(pathname: string): string | null {
+  const normalized = pathname.replace(/\/+$/, '') || '/'
+  const legacy = LEGACY_PATH_REDIRECTS[normalized]
+  if (legacy) return routeHref(legacy)
+  if (!PATH_TO_ROUTE.has(normalized)) return routeHref('landing')
+  return null
+}
+
+/** Legacy hash URLs from v0.2.x (#/, #/how-it-works). Empty hash is not legacy. */
+export function parseLegacyHash(hash: string): AppRoute | null {
+  if (!hash.startsWith('#')) return null
+  const stripped = hash.slice(1)
+  if (stripped === '' || stripped === '/') return 'mill'
+  if (stripped === '/how-it-works' || stripped === 'how-it-works') return 'how-it-works'
+  return null
 }
 
 export function routeHref(route: AppRoute): string {
-  return route === 'how-it-works' ? '#/how-it-works' : '#/'
+  return ROUTE_PATHS[route]
 }
 
 export function routeLabel(route: AppRoute): string {
-  return route === 'how-it-works' ? 'How it works' : 'Studio'
+  switch (route) {
+    case 'landing':
+      return 'Home'
+    case 'foundry':
+      return 'Foundry'
+    case 'mill':
+      return 'Mill'
+    case 'how-it-works':
+      return 'How it works'
+  }
+}
+
+export function isInternalHref(href: string): boolean {
+  if (!href.startsWith('/')) return false
+  if (href.startsWith('//')) return false
+  return true
+}
+
+export function navigate(route: AppRoute, options?: { replace?: boolean }) {
+  const path = routeHref(route)
+  if (window.location.pathname === path) return
+  if (options?.replace) {
+    window.history.replaceState(null, '', path)
+  } else {
+    window.history.pushState(null, '', path)
+  }
+  window.dispatchEvent(new PopStateEvent('popstate'))
 }

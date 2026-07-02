@@ -1,0 +1,83 @@
+{
+  "testCounts": {
+    "unitBrowser": 40,
+    "e2e": 13
+  },
+  "landingQuickAnswer": [
+    "Glyphmill converts PNG letter images into installable TTF and WOFF2 fonts.",
+    "The conversion pipeline runs entirely in your browser via WASM.",
+    "An optional Claude agent tunes trace parameters; a free no-agent path exists.",
+    "Foundry — agentic glyph creation — is coming soon.",
+    "No accounts, no uploads of source PNGs for conversion."
+  ],
+  "quickAnswer": [
+    "Glyphmill converts PNG letter images into installable TTF and WOFF2 fonts in your browser.",
+    "Preprocess, trace, place, build, and export run locally in WASM; only optional agent QA previews use a stateless proxy.",
+    "Three build paths: Generate (no agent, free), Run agent (OpenRouter), or Replay recipe (free, zero model calls).",
+    "Foundry — agentic glyph creation — is coming soon; the Mill console is live today at /mill."
+  ],
+  "howToSteps": [
+    {
+      "name": "Upload PNG letter images",
+      "text": "Open the Mill at /mill and drop one or more PNG glyphs into the SOURCE bay."
+    },
+    {
+      "name": "Generate a font",
+      "text": "Run Generate (no agent), Run agent, or Replay recipe in the BUILD bay. Review gates if using agent mode."
+    },
+    {
+      "name": "Download TTF or WOFF2",
+      "text": "Export from the EXPORT bay — TTF master, WOFF2 for the web, or a zip bundle."
+    }
+  ],
+  "faq": [
+    {
+      "q": "How do I make a font from images without FontForge?",
+      "a": "Open the Mill at /mill, upload PNG letter images, and run Generate (no agent). Glyphmill preprocesses each PNG, traces it with Potrace WASM, places the vector on a baseline, and builds a TTF with opentype.js — all in your browser. Download TTF or WOFF2 from the EXPORT bay. No desktop install, no accounts, and no upload of source PNGs for conversion. Try A-KaminoDeco.png from the repo as a one-file demo."
+    },
+    {
+      "q": "Does Glyphmill use AI to generate letter shapes?",
+      "a": "No. Letter shapes come from your PNG artwork traced by Potrace — deterministic geometry, not model hallucination. The optional Claude agent does not invent outlines; it picks numeric pipeline parameters, inspects trace and render previews, and asks you to approve at two human gates. Same PNG plus same parameters always yields the same font. AI assists tuning when you choose agent mode; the no-agent path is fully offline-capable."
+    },
+    {
+      "q": "How can PNG-to-font conversion work without AI?",
+      "a": "Font tools have traced bitmaps into vectors since the 1990s. Glyphmill runs that class of pipeline in your browser via WASM — Potrace for tracing, opentype.js for assembly. No model generates letter shapes. The math is deterministic: same PNG plus same parameters produces the same font every time. The pinned no-agent recipe encodes Phase 0 parameters validated on A-KaminoDeco.png."
+    },
+    {
+      "q": "What runs in my browser versus on a server?",
+      "a": "Everything in the conversion path — preprocess, trace, place, build, export — runs locally in WASM. Your source PNGs and final font bytes never upload for conversion. The only server piece is an optional /api/agent proxy for agent mode, which forwards render previews and chat to OpenRouter. Hosted mode uses a shared key with rate limits; bring-your-own-key keeps traffic on your account."
+    },
+    {
+      "q": "If no-agent mode works, why use the agent?",
+      "a": "Because the pipeline needs dozens of numeric parameters, and the right values change per image. No-agent uses a pinned recipe tuned on A-KaminoDeco.png — fast and free when your art is similar. The agent inspects your PNG, picks parameters, checks its own previews, and recovers when traces fill counters or sit wrong on the baseline. Copy the recipe after a good build and replay free thereafter."
+    },
+    {
+      "q": "What is a recipe in Glyphmill?",
+      "a": "A JSON snapshot of every parameter the pipeline used: threshold, trace settings, baseline fraction, bearings, codepoints, and family metadata. Copy it after a successful build from the EXPORT bay. Paste it later with the same PNGs in the same order and Replay recipe rebuilds the font with zero API calls. Think saved preset, not magic — recipes are how you pay once per style in agent mode."
+    },
+    {
+      "q": "What are the human gates in agent mode?",
+      "a": "Agent-only checkpoints in the BUILD bay. Gate 1 shows the traced vector before building; Gate 2 shows the rendered glyph in the assembled font. You accept or nudge in plain English — sharper corners, counter filled, raise on baseline. The agent maps nudges to parameter changes and reruns only the stages that need it. Gates keep humans in the loop without manual FontForge editing."
+    },
+    {
+      "q": "When should I use no-agent, agent, or recipe replay?",
+      "a": "Try Generate (no agent) first — especially with A-KaminoDeco.png. If the trace looks wrong or validation fails, switch to Run agent or tune via recipe replay after an agent run. Batch multiple letters with no-agent when they share a consistent style. Replay when you already dialed in parameters and want zero model cost. Agent mode is single-glyph today; batch via no-agent or replay."
+    },
+    {
+      "q": "What file formats does Glyphmill export?",
+      "a": "TTF as the master outline font, WOFF2 compressed for web use, and a zip with both plus a stub WOFF passthrough until a WASM WOFF1 encoder lands. All built client-side in the EXPORT bay. Round-trip parse validation runs on the TTF before download. Install the TTF on desktop systems or serve WOFF2 from your site — no cloud conversion step."
+    },
+    {
+      "q": "How does the Mill console workflow work?",
+      "a": "The Mill at /mill uses four staged instrument bays: SOURCE for PNG upload and glyph grid, BUILD for generate/agent actions and gates, REVIEW for preview and warnings, EXPORT for downloads and recipe copy. A step indicator tracks Source, Build, Review, Export. Mono readouts carry metrics and log lines; prose stays in sans. The console forces dark theme and loads about 1.2 MB of WASM on first visit."
+    },
+    {
+      "q": "What is the Foundry chamber?",
+      "a": "Foundry is the planned sketch chamber — describe a letter style, explore glyph variations with an agent, then hand artwork to the Mill. Image generation and Foundry tooling are not wired yet; /foundry shows an honest placeholder with hatched inert styling. The Mill is live today for PNG-to-font conversion. Glyphmill is a two-chamber workshop even while Foundry is deferred."
+    },
+    {
+      "q": "What are Glyphmill's honest limitations?",
+      "a": "Agent mode is single-glyph today — batch via no-agent or replay. Potrace WASM uses library defaults; trace params are recorded in recipes but not all are tunable at runtime yet. WOFF export is a stub. First load pulls about 1.2 MB of WASM (wawoff2). Foundry image generation is deferred. These are engineering tradeoffs documented in the Mill UI and this page — not roadmap fiction."
+    }
+  ]
+}

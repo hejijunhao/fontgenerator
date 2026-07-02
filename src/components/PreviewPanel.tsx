@@ -71,7 +71,7 @@ function ValidationBadges({ validation }: { validation: ValidationResult }) {
       <Badge ok={validation.roundTripOk} label="Round-trip parse" />
       {validation.warnings.length > 0 && (
         <span
-          className="rounded-full border border-amber-300/50 bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-900 dark:border-amber-500/30 dark:bg-amber-950/40 dark:text-amber-100"
+          className="console-badge-warn px-2.5 py-0.5 text-xs font-medium"
           title={validation.warnings.join('; ')}
         >
           {validation.warnings.length} warning{validation.warnings.length === 1 ? '' : 's'}
@@ -85,10 +85,8 @@ function Badge({ ok, label }: { ok: boolean; label: string }) {
   return (
     <span
       className={[
-        'rounded-full px-2.5 py-0.5 text-xs font-medium',
-        ok
-          ? 'border border-emerald-300/50 bg-emerald-50 text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-950/40 dark:text-emerald-100'
-          : 'border border-red-300/50 bg-red-50 text-red-900 dark:border-red-500/30 dark:bg-red-950/40 dark:text-red-100',
+        'px-2.5 py-0.5 text-xs font-medium',
+        ok ? 'console-badge-ok' : 'console-badge-fail',
       ].join(' ')}
     >
       {ok ? '✓' : '✗'} {label}

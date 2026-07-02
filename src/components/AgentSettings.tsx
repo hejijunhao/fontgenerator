@@ -2,7 +2,11 @@ import { useState } from 'react'
 import { FALLBACK_MODEL, DEFAULT_MODEL } from '@/agent/provider'
 import { useProjectStore } from '@/store/projectStore'
 
-export function AgentSettings() {
+type AgentSettingsProps = {
+  embedded?: boolean
+}
+
+export function AgentSettings({ embedded = false }: AgentSettingsProps) {
   const agentModel = useProjectStore((s) => s.agentModel)
   const byoApiKey = useProjectStore((s) => s.byoApiKey)
   const setAgentModel = useProjectStore((s) => s.setAgentModel)
@@ -12,15 +16,23 @@ export function AgentSettings() {
   )
   const [showKey, setShowKey] = useState(false)
 
-  return (
-    <section className="panel p-4">
-      <header className="space-y-1">
-        <h2 className="panel-heading">Agent settings</h2>
+  const content = (
+    <>
+      {!embedded && (
+        <header className="space-y-1">
+          <h2 className="panel-heading">Agent settings</h2>
+          <p className="text-xs text-muted">
+            Hosted mode uses the server key. BYO-key sends your OpenRouter key per request only —
+            never stored.
+          </p>
+        </header>
+      )}
+      {embedded && (
         <p className="text-xs text-muted">
           Hosted mode uses the server key. BYO-key sends your OpenRouter key per request only —
           never stored.
         </p>
-      </header>
+      )}
 
       <fieldset className="mt-3 space-y-2" disabled={isBusy}>
         <legend className="text-xs font-medium text-subtle">Model</legend>
@@ -73,8 +85,12 @@ export function AgentSettings() {
           </p>
         )}
       </label>
-    </section>
+    </>
   )
+
+  if (embedded) return <div className="space-y-3">{content}</div>
+
+  return <section className="panel p-4">{content}</section>
 }
 
 function ModelChip({

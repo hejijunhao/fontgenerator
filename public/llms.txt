@@ -1,0 +1,15 @@
+# Glyphmill
+
+> Glyphmill converts PNG letter images into installable TTF and WOFF2 fonts in the
+> browser. Conversion runs client-side in WASM. Optional Claude agent tunes trace parameters.
+> Foundry — agentic glyph creation — is coming soon.
+
+## Core pages
+
+- / — product overview, proof strip, link to the Mill
+- /how-it-works — full pipeline FAQ, three build paths, methodology
+- /mill — PNG upload, font generation, download TTF / WOFF2 / zip
+
+## Deferred
+
+- /foundry — agentic glyph creation (not yet available)

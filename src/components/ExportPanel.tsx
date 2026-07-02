@@ -9,6 +9,7 @@ type ExportPanelProps = {
   onCopyRecipe: () => Promise<void>
   onReplayRecipe: (json: string) => Promise<void>
   isReplaying: boolean
+  embedded?: boolean
 }
 
 export function ExportPanel({
@@ -19,17 +20,11 @@ export function ExportPanel({
   onCopyRecipe,
   onReplayRecipe,
   isReplaying,
+  embedded,
 }: ExportPanelProps) {
   const [recipeText, setRecipeText] = useState('')
-  const [copyStatus, setCopyStatus] = useState<string | null>(null)
   const [replayError, setReplayError] = useState<string | null>(null)
   const base = family.replace(/\s+/g, '')
-
-  async function handleCopy() {
-    await onCopyRecipe()
-    setCopyStatus('Copied')
-    setTimeout(() => setCopyStatus(null), 2000)
-  }
 
   async function handleReplay() {
     setReplayError(null)
@@ -40,14 +35,21 @@ export function ExportPanel({
     }
   }
 
-  return (
-    <section className="panel space-y-4 p-5">
-      <header className="space-y-1">
-        <h2 className="panel-heading">Export</h2>
+  const content = (
+    <>
+      {!embedded && (
+        <header className="space-y-1">
+          <h2 className="panel-heading">Export</h2>
+          <p className="text-sm text-muted">
+            TTF master + WOFF2 web font. WOFF is a passthrough stub until a WASM encoder lands.
+          </p>
+        </header>
+      )}
+      {embedded && (
         <p className="text-sm text-muted">
           TTF master + WOFF2 web font. WOFF is a passthrough stub until a WASM encoder lands.
         </p>
-      </header>
+      )}
 
       {output ? (
         <div className="flex flex-wrap gap-2">
@@ -62,18 +64,17 @@ export function ExportPanel({
 
       {recipe && (
         <div className="flex flex-wrap items-center gap-3">
-          <button type="button" onClick={() => handleCopy()} className="btn-secondary px-4 py-2">
+          <button type="button" onClick={() => onCopyRecipe()} className="btn-secondary px-4 py-2">
             Copy recipe
           </button>
-          {copyStatus && <span className="text-xs text-muted">{copyStatus}</span>}
-          <span className="text-xs text-muted">
+          <span className="console-mono-data text-xs text-muted">
             {recipe.glyphs.length} glyph{recipe.glyphs.length === 1 ? '' : 's'} · v{recipe.version}
           </span>
         </div>
       )}
 
       <div className="space-y-2 border-t border-border pt-4">
-        <p className="text-xs font-medium tracking-wide text-subtle uppercase">Recipe replay</p>
+        <p className="console-readout">Recipe replay</p>
         <p className="text-xs text-muted">
           Paste recipe JSON, upload matching PNGs (one per glyph, same order), replay with zero
           model calls.
@@ -86,7 +87,9 @@ export function ExportPanel({
           className="field-input w-full font-mono text-xs"
         />
         {replayError && (
-          <p className="text-xs text-red-800 dark:text-red-300">{replayError}</p>
+          <p className="console-mono-data text-xs" style={{ color: 'var(--state-fail)' }}>
+            {replayError}
+          </p>
         )}
         <button
           type="button"
@@ -97,8 +100,12 @@ export function ExportPanel({
           {isReplaying ? 'Replaying…' : 'Replay recipe'}
         </button>
       </div>
-    </section>
+    </>
   )
+
+  if (embedded) return <div className="space-y-4">{content}</div>
+
+  return <section className="panel space-y-4 p-5">{content}</section>
 }
 
 function DownloadChip({
@@ -117,7 +124,7 @@ function DownloadChip({
       className={
         primary
           ? 'btn-primary px-4 py-2'
-          : 'rounded-xl border border-border-strong bg-surface-strong px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-surface-hover'
+          : 'btn-secondary px-4 py-2 text-sm font-medium'
       }
     >
       {label}

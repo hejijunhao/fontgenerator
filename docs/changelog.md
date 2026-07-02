@@ -6,10 +6,194 @@ All notable changes to Glyphmill are documented here. The format is based on
 
 ## Index
 
+- **[0.5.1](#051--2026-07-02)** — Post-review hardening: shared GEO content, path redirects, build-time sitemap
+- **[0.5.0](#050--2026-07-02)** — v2.0: GEO pillar, per-route OG images, platform evolution complete
+- **[0.4.1](#041--2026-07-02)** — v2 Phase 3: Foundry placeholder at `/foundry`
+- **[0.4.0](#040--2026-07-02)** — v2 Phase 2: Kamino console Mill at `/mill`
+- **[0.3.0](#030--2026-07-02)** — v2 Phase 1: landing page, path routing, GEO static files
 - **[0.2.1](#021--2026-07-02)** — Public "How it works" FAQ page and in-app navigation
 - **[0.2.0](#020--2026-07-02)** — Glyphmill rebrand, light/dark mode, polished UI shell
 - **[0.1.1](#011--2026-07-02)** — CI hardening, lint fixes, repo hygiene
 - **[0.1.0](#010--2026-07-01)** — Initial v1: browser PNG → font pipeline with optional agent
+
+---
+
+## [0.5.1] — 2026-07-02
+
+Post–v2.0 production review fixes — content accuracy, GEO drift prevention, crawler hardening,
+and routing edge cases. No pipeline or agent behaviour changes.
+
+### Why
+
+A pre-ship review flagged stale public copy (test count still said 27 after v2 added 22 more
+tests), duplicated FAQ strings between the TypeScript pillar page and the prerender build script
+(drift risk for AI crawlers), client-only JSON-LD, hardcoded `sitemap.xml` / `robots.txt` domains,
+and soft 404s on unknown paths. This patch closes those gaps before production deploy.
+
+### Added
+
+- **`geoPrerenderContent.json`** — single source for FAQ, HowTo steps, landing/how-it-works Quick
+  Answer bullets, and test-count constants; imported by `howItWorksContent.ts` and
+  `scripts/prerender-pillars.mjs`
+- **`scripts/lib/geoContent.mjs`** + **`scripts/lib/siteUrl.mjs`** — shared build-time loaders
+  for GEO JSON and `VITE_SITE_URL`
+- **Prerender JSON-LD** — `FAQPage`, `HowTo`, and landing `@graph` injected into built HTML
+  `<head>` (non-JS crawlers)
+- **Build-time `sitemap.xml` + `robots.txt`** — written to `dist/` after Vite using
+  `VITE_SITE_URL` (overrides copied `public/` defaults)
+- **`resolvePathRedirect()`** — `/studio` → `/mill`; unknown paths → `/` via `replaceState`
+- **Test coverage** — JSON ↔ TS FAQ parity unit test; e2e for `/studio` redirect, unknown-path
+  redirect, prerender `FAQPage`, per-route `og:image`, updated test-count assertions
+
+### Changed
+
+- **`howItWorksContent.ts`** — FAQ, HowTo, and Quick Answer bullets load from JSON; exports
+  `TEST_COUNTS`, `TEST_COUNT_TOTAL`, `TEST_COUNT_QUICK_ANSWER`, `TEST_COUNT_METHODOLOGY`
+- **`HowItWorksView.tsx`** — methodology copy uses `TEST_COUNT_METHODOLOGY` (53 tests, not 27)
+- **`prerender-pillars.mjs`** — reads shared JSON; generates sitemap/robots/JSON-LD (no hand-copied FAQ)
+- **`useAppRoute.ts`** — applies canonical path redirects on init and `popstate`
+- **`README.md`** — CI description lists 53 tests (40 Vitest + 13 Playwright)
+- **`tests/e2e/geo.spec.ts`** — consolidated static-file checks; added redirect and OG coverage
+- **`tests/e2e/smoke.spec.ts`** — removed duplicate GEO static-file test (covered in `geo.spec.ts`)
+
+### Deploy notes
+
+Set `VITE_SITE_URL` to the production origin on Vercel. The build now emits `dist/sitemap.xml`
+and `dist/robots.txt` with that domain automatically — no manual edit of `public/` files required
+for custom domains.
+
+---
+
+## [0.5.0] — 2026-07-02
+
+**v2.0 platform evolution** — landing, console Mill, Foundry placeholder, GEO pillar. Breaking route
+change from v0.2: `/` is landing, tool at `/mill`.
+
+### Added
+
+- **`howItWorksContent.ts`** — shared Quick Answer, 12 FAQ items, pipeline stages, comparison tables
+- **GEO pillar rewrite** — `HowItWorksView`: version block, two chambers, question H2s, methodology,
+  semantic tables
+- **JSON-LD on how-it-works** — `FAQPage`, `HowTo`, `SoftwareApplication`, `BreadcrumbList`
+- **Per-route OG images** — `public/og/*.png` (1200×630); `generate:og` build script
+- **`article:modified_time`** on how-it-works; `og:image` on all routes via `usePageMeta`
+- **Prerender FAQ** — full 12-item FAQ in crawler-visible HTML (SPA `index.html` + nested path)
+- **Tests** — `howItWorksContent.test.ts`, `tests/e2e/geo.spec.ts` (6 cases)
+
+### Changed
+
+- **`JsonLd.tsx`** — how-it-works schema graph alongside landing
+- **`pageMeta.ts`** — `ogImage` per route
+
+### Completion notes
+
+See [docs/completions/phase-p4-geo-pillar.md](completions/phase-p4-geo-pillar.md). Phases P1–P4
+complete the [v2 implementation plan](executing/v2-implementation-plan.md).
+
+---
+
+## [0.4.1] — 2026-07-02
+
+v2 Phase 3 — Foundry **placeholder** at `/foundry`. Static Monument page; no image gen or agent wiring.
+
+### Added
+
+- **`FoundryPlaceholderView`** — honest coming-soon copy, CSS wireframe mock (brief + glyph grid),
+  **Use the Mill today** CTA
+- **Inert styles** (`index.css`) — `.inert-frame`, `.badge-inert` hatched treatment per Kamino §5.7
+- **E2E** — `/foundry` render + CTA navigates to `/mill`
+
+### Changed
+
+- **`App.tsx`** — replaces interim `FoundryInterim` stub
+- **`AppNavLink`** — **Soon** badge uses hatched `.badge-inert`
+- **`LandingView`** — Foundry chamber card hatched with link to placeholder
+
+### Completion notes
+
+See [docs/completions/phase-p3-foundry-placeholder.md](completions/phase-p3-foundry-placeholder.md).
+
+---
+
+## [0.4.0] — 2026-07-02
+
+v2 Phase 2 — Kamino **console** for the Mill. UI-only; pipeline and agent behaviour unchanged.
+
+### Why
+
+The Mill needed a distinct “engine room” surface — dark instrument bays, mono readouts, staged
+workflow — separate from the Monument landing and How it works pages.
+
+### Added
+
+- **`consoleTheme.css`** — Kamino console tokens scoped to `.console-root` on `/mill`
+- **Console components** — `Bay`, `ReadoutLabel`, `StatusPill`, `PipelineGraph`, `Toast`
+- **`MillStepIndicator`** — four stages (Source / Build / Review / Export) with registration ticks
+- **`millStage.ts`** — derives active stage from project store state
+- **`wasmReady.ts`** — WASM warm-up banner (“warming up the mill…”, ~1.2 MB note)
+- **`useMillConsoleTheme`** — forces dark theme on Mill; restores user preference on exit
+- **IBM Plex Mono** — loaded for console readouts and data fields
+
+### Changed
+
+- **`StudioView`** — restructured into SOURCE / BUILD / REVIEW / EXPORT bays; `AgentSettings` in
+  disclosure; `PipelineGraph` replaces `ProgressSteps` in the UI
+- **`PageShell`** — measured-field background on Mill; Monument pages unchanged
+- **`AppHeader`** — theme toggle hidden on `/mill`
+- **Mill components** — `DropZone`, gates, `RunView`, `ExportPanel`, `PreviewPanel`, `GlyphGrid`
+  restyled under console scope (square bays, round buttons, state tokens)
+
+### Tests
+
+- `tests/unit/millStage.test.ts` — stage derivation (4 cases)
+- E2E smoke unchanged — all flows at `/mill` still pass (34 unit/browser + 5 e2e)
+
+---
+
+## [0.3.0] — 2026-07-02
+
+v2 Phase 1 — platform shape and discoverability. **Breaking:** `/` is now the landing page; the
+font tool lives at **`/mill`**.
+
+### Why
+
+Glyphmill needed a proper entry point for new visitors, crawler-friendly URLs, and Foundry + Mill
+framing before the console redesign (P2). Pipeline and agent behaviour stay unchanged.
+
+### Added
+
+- **`LandingView`** (`src/views/LandingView.tsx`) — Monument surface: Quick Answer, proof strip,
+  two-chamber cards, FontForge comparison table, three-step HowTo, CTAs
+- **Path-based routing** (`src/lib/navigation.ts`, `src/hooks/useAppRoute.ts`) — `/`, `/mill`,
+  `/foundry`, `/how-it-works`; History API + `popstate`; legacy `#/` hash migrates to `/mill`
+- **`PageShell`** (`src/components/layout/PageShell.tsx`) — Monument vs Console layout tiers
+- **`pageMeta` + `usePageMeta`** — per-route title, description, canonical, Open Graph, Twitter
+- **`JsonLd`** (`src/components/layout/JsonLd.tsx`) — landing `SoftwareApplication` + `Organization`
+  schema
+- **GEO static files** — `public/robots.txt`, `public/llms.txt`, `public/sitemap.xml`
+- **Prerender snippets** (`scripts/prerender-pillars.mjs`) — crawler-visible Quick Answer in
+  `dist/index.html` and `dist/how-it-works/index.html`
+- **Proof assets in `public/`** — `A-KaminoDeco.png`, `golden/A-render.png`
+- **Unit tests** — `tests/unit/navigation.test.ts` (5 cases)
+- **E2E** — landing → Mill nav; GEO file smoke; prerender HTML check
+
+### Changed
+
+- **`AppHeader` / `AppFooter` / `AppNavLink`** — nav order Foundry (Soon) · Mill · How it works;
+  logo → `/`; SPA click handling via `navigate()`
+- **`App.tsx`** — route switch; interim `FoundryInterim` stub at `/foundry` until P3
+- **Studio → Mill** in user-facing copy (component name `StudioView` unchanged)
+- **`HowItWorksView`** — CTA "Open Mill" → `/mill`
+- **`package.json`** — `0.3.0`; build runs prerender script after Vite
+- **`.env.example`** — documents optional `VITE_SITE_URL`
+
+### Unchanged
+
+- Pipeline, agent, store, proxy, export — no functional changes
+
+### Completion notes
+
+See [docs/completions/phase-p1-ia-discoverability.md](completions/phase-p1-ia-discoverability.md).
 
 ---
 
