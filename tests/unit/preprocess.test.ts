@@ -1,11 +1,11 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { PNG } from 'pngjs'
 import { describe, expect, it } from 'vitest'
 import { preprocessRgba } from '@/pipeline/preprocess'
 import { REFERENCE_RECIPE } from '../helpers/referenceRecipe'
 
 function loadFixtureRgba() {
-  const { PNG } = require('pngjs') as typeof import('pngjs')
   const buf = readFileSync(
     fileURLToPath(new URL('../fixtures/A-KaminoDeco.png', import.meta.url)),
   )

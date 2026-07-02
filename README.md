@@ -66,7 +66,7 @@ Built for lettering artists, logo designers, and type tinkerers who have **image
 ## Try it in 30 seconds
 
 ```bash
-git clone <repo-url> && cd fontgenerator && npm install && npm run dev
+git clone https://github.com/hejijunhao/fontgenerator.git && cd fontgenerator && npm install && npm run dev
 ```
 
 1. Open `http://localhost:5173`
@@ -151,7 +151,7 @@ Example: [`tests/fixtures/kamino-deco-recipe.json`](tests/fixtures/kamino-deco-r
 ```bash
 npm run dev           # local app + /api/agent proxy
 npm run build         # production build
-npm run ci            # build + 27 tests (Vitest + Playwright)
+npm run ci            # build + lint + 27 tests (Vitest + Playwright)
 npm run test:e2e      # UI smoke only
 ```
 
@@ -165,6 +165,7 @@ npm run test:e2e      # UI smoke only
 
 | Doc | What |
 |-----|------|
+| [`docs/changelog.md`](docs/changelog.md) | Release history |
 | [`docs/proposal.md`](docs/proposal.md) | Vision & scope |
 | [`docs/product-blueprint.md`](docs/product-blueprint.md) | Architecture & contracts |
 | [`docs/executing/implementation-plan.md`](docs/executing/implementation-plan.md) | Build phases |

@@ -31,3 +31,8 @@ pnpm-debug.log*
 
 # cli reference intermediates
 scripts/cli-reference/work/
+
+# test artifacts
+.vitest-attachments/
+test-results/
+playwright-report/

@@ -1,7 +1,7 @@
 {
   "name": "fontgenerator",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.1",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -13,7 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "build:e2e": "VITE_E2E_HOOKS=true npm run build",
-    "ci": "npm run build && npm test && npm run test:e2e",
+    "ci": "npm run build && npm run lint && npm test && npm run test:e2e",
     "test:e2e": "playwright test",
     "test:unit": "vitest run --project unit",
     "test:browser": "vitest run --project browser",

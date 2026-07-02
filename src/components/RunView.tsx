@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { errorHintForTool, formatStepDuration, labelForTool } from '@/lib/agentLabels'
 import type { AgentStep, AgentUsageNote } from '@/types/agent'
 
@@ -7,10 +8,29 @@ type RunViewProps = {
   usageNote?: AgentUsageNote
 }
 
-export function RunView({ steps, isRunning, usageNote }: RunViewProps) {
-  if (steps.length === 0 && !isRunning) return null
+type AgentElapsedProps = {
+  runStarted: number
+  frozenAt?: number
+}
 
+function AgentElapsed({ runStarted, frozenAt }: AgentElapsedProps) {
+  const [now, setNow] = useState(() => Date.now())
+  const live = frozenAt == null
+
+  useEffect(() => {
+    if (!live) return
+    const id = window.setInterval(() => setNow(Date.now()), 1000)
+    return () => window.clearInterval(id)
+  }, [live])
+
+  return <span>Elapsed {formatStepDuration((frozenAt ?? now) - runStarted)}</span>
+}
+
+export function RunView({ steps, isRunning, usageNote }: RunViewProps) {
   const runStarted = steps[0]?.timestamp
+  const lastStepAt = steps[steps.length - 1]?.timestamp
+
+  if (steps.length === 0 && !isRunning) return null
 
   return (
     <section className="space-y-3 rounded-2xl border border-ink/10 bg-white/50 p-5">
@@ -20,12 +40,11 @@ export function RunView({ steps, isRunning, usageNote }: RunViewProps) {
         </h2>
         <div className="flex flex-wrap items-center gap-2 text-xs text-ink/55">
           {runStarted != null && (
-            <span>
-              Elapsed{' '}
-              {formatStepDuration(
-                (steps[steps.length - 1]?.timestamp ?? Date.now()) - runStarted,
-              )}
-            </span>
+            <AgentElapsed
+              key={runStarted}
+              runStarted={runStarted}
+              frozenAt={isRunning ? undefined : (lastStepAt ?? runStarted)}
+            />
           )}
           {isRunning && <span className="font-medium">Waiting for next tool…</span>}
         </div>

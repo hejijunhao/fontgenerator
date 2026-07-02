@@ -41,7 +41,6 @@ test.describe('font generator smoke', () => {
 
       const tracePreview =
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
-      const renderPreview = tracePreview
 
       store.setState({
         isAgentRunning: true,
