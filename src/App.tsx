@@ -15,9 +15,10 @@ function App() {
   usePageMeta(route)
 
   return (
-    <div
-      className={['flex min-h-dvh flex-col', route === 'mill' ? 'console-root dark' : ''].join(' ')}
-    >
+    <div className="relative flex min-h-dvh flex-col">
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
       <AppHeader />
       <JsonLd route={route} />
 

@@ -9,7 +9,9 @@ type ReadoutLabelProps = {
 export function ReadoutLabel({ children, signal, className = '' }: ReadoutLabelProps) {
   return (
     <p
-      className={['console-readout', signal ? 'console-readout--signal' : '', className].join(' ')}
+      className={['mill-kicker', signal ? 'mill-kicker--signal' : '', className]
+        .filter(Boolean)
+        .join(' ')}
     >
       {children}
     </p>

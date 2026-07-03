@@ -24,19 +24,19 @@ export function StageBay({
 }: StageBayProps) {
   if (!expanded) {
     return (
-      <section className="console-bay">
+      <section className="stage-bay">
         <button
           type="button"
           onClick={onExpand}
-          className="console-bay-collapsed flex w-full items-center justify-between gap-4 p-4 text-left"
+          className="stage-bay-collapsed"
           aria-expanded={false}
           aria-label={`Expand ${kicker} — ${collapsedSummary}`}
         >
           <div className="min-w-0 space-y-1">
-            <ReadoutLabel signal={false}>{kicker}</ReadoutLabel>
-            <p className="console-mono-data truncate text-xs text-muted">{collapsedSummary}</p>
+            <ReadoutLabel>{kicker}</ReadoutLabel>
+            <p className="mono-data truncate text-muted">{collapsedSummary}</p>
           </div>
-          <span className="console-mono-data shrink-0 text-xs text-subtle" aria-hidden>
+          <span className="mono-data shrink-0 text-subtle" aria-hidden>
             +
           </span>
         </button>

@@ -33,10 +33,10 @@ export function RunView({ steps, isRunning, usageNote }: RunViewProps) {
   if (steps.length === 0 && !isRunning) return null
 
   return (
-    <section className="console-bay-nested space-y-3 p-4">
+    <section className="stage-bay-nested space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="console-readout">Agent run</h2>
-        <div className="console-mono-data flex flex-wrap items-center gap-2 text-xs text-muted">
+        <h2 className="mill-kicker">Agent run</h2>
+        <div className="mono-data flex flex-wrap items-center gap-2 text-muted">
           {runStarted != null && (
             <AgentElapsed
               key={runStarted}
@@ -57,36 +57,28 @@ export function RunView({ steps, isRunning, usageNote }: RunViewProps) {
           return (
             <li
               key={`${step.timestamp}-${step.tool}-${index}`}
-              className="flex gap-3 border border-border bg-surface-muted px-3 py-2.5 text-sm"
+              className="flex gap-3 rounded-lg border border-border bg-surface-muted px-3 py-2.5 text-sm"
             >
               <span className="w-5 shrink-0 pt-0.5 text-xs font-medium text-muted">
                 {index + 1}
               </span>
               <div className="min-w-0 flex-1 space-y-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="console-mono-data font-medium text-ink">{step.tool}</span>
+                  <span className="mono-data font-medium text-ink">{step.tool}</span>
                   <span className="text-xs text-muted">{labelForTool(step.tool)}</span>
                   {duration != null && (
                     <span className="text-xs text-muted">+{formatStepDuration(duration)}</span>
                   )}
-                  {step.verdict && (
-                    <span className="rounded-full bg-surface-hover px-2 py-0.5 text-xs text-subtle">
-                      {step.verdict}
-                    </span>
-                  )}
-                  {step.error && (
-                    <span className="rounded-full border border-red-300/50 bg-red-50 px-2 py-0.5 text-xs text-red-900 dark:border-red-500/30 dark:bg-red-950/40 dark:text-red-200">
-                      error
-                    </span>
-                  )}
+                  {step.verdict && <span className="badge badge-default">{step.verdict}</span>}
+                  {step.error && <span className="badge badge-error">error</span>}
                 </div>
-                <pre className="max-h-24 overflow-auto text-xs whitespace-pre-wrap text-muted">
+                <pre className="max-h-24 overflow-auto font-mono text-xs whitespace-pre-wrap text-muted">
                   {JSON.stringify(step.params, null, 2)}
                 </pre>
                 {step.error && (
-                  <div className="space-y-0.5 text-xs text-red-800 dark:text-red-300">
+                  <div className="space-y-0.5 text-xs text-error">
                     <p>{step.error}</p>
-                    {hint && <p className="text-red-900/70 dark:text-red-400/80">Recovery: {hint}</p>}
+                    {hint && <p className="opacity-80">Recovery: {hint}</p>}
                   </div>
                 )}
               </div>
@@ -110,7 +102,7 @@ export function RunView({ steps, isRunning, usageNote }: RunViewProps) {
       )}
 
       {usageNote && (
-        <p className="console-mono-data text-xs text-muted">
+        <p className="mono-data text-muted">
           Tokens: {usageNote.totalTokens ?? '—'}
           {usageNote.cacheReadTokens != null && usageNote.cacheReadTokens > 0
             ? ` · cache read: ${usageNote.cacheReadTokens}`

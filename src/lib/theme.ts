@@ -21,7 +21,7 @@ export function resolveTheme(stored: Theme | null): Theme {
 }
 
 export function applyTheme(theme: Theme) {
-  document.documentElement.classList.toggle('dark', theme === 'dark')
+  document.documentElement.setAttribute('data-theme', theme)
 }
 
 export function persistTheme(theme: Theme) {

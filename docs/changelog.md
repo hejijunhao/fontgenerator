@@ -6,6 +6,7 @@ All notable changes to Glyphmill are documented here. The format is based on
 
 ## Index
 
+- **[0.7.0](#070--2026-07-03)** — VOID design system migration (Phases VOID-A–E): unified dark-first UI, Kamino visual layer replaced
 - **[0.6.0](#060--2026-07-02)** — UI/UX polish pass (Phases UI-P1–P4): shell stability, landing sections, Mill micro-UX, design system
 - **[0.5.1](#051--2026-07-02)** — Post-review hardening: shared GEO content, path redirects, build-time sitemap
 - **[0.5.0](#050--2026-07-02)** — v2.0: GEO pillar, per-route OG images, platform evolution complete
@@ -16,6 +17,178 @@ All notable changes to Glyphmill are documented here. The format is based on
 - **[0.2.0](#020--2026-07-02)** — Glyphmill rebrand, light/dark mode, polished UI shell
 - **[0.1.1](#011--2026-07-02)** — CI hardening, lint fixes, repo hygiene
 - **[0.1.0](#010--2026-07-01)** — Initial v1: browser PNG → font pipeline with optional agent
+
+---
+
+## [0.7.0] — 2026-07-03
+
+**VOID design system migration** — five implementation phases from
+[void-design-migration.md](executing/void-design-migration.md). Replaces the Kamino dual-surface visual
+layer (cream Monument + warm-obsidian Console) with a single VOID language: near-void canvas
+(`#07060b`), electric-violet accent (`#7c5cfc`), Geist + DM Serif Display + Geist Mono. **UI-only**
+— routing, GEO copy contracts, pipeline, agent, store, and export logic unchanged.
+
+Completion notes: [phase-void-a-token-foundation.md](completions/phase-void-a-token-foundation.md) ·
+[phase-void-b-app-shell.md](completions/phase-void-b-app-shell.md) ·
+[phase-void-c-shared-layout.md](completions/phase-void-c-shared-layout.md) ·
+[phase-void-d-monument-views.md](completions/phase-void-d-monument-views.md) ·
+[phase-void-e-mill-tool-ui.md](completions/phase-void-e-mill-tool-ui.md)
+
+### Why
+
+v2.0 and the UI-P1–P4 polish pass improved IA and Mill behaviour, but the product still ran on two
+token systems (`index.css` + `consoleTheme.css`) and Kamino-specific patterns (tagline header row,
+registration-bracket bays, left-border callouts, symmetric 3-up grids). VOID unifies every route under
+one theme mechanism and one component grammar while preserving stage bays, gate placement, nav order,
+and GEO strings.
+
+### Phase VOID-A — Token foundation
+
+**Added**
+
+- **`src/lib/voidTokens.css`** — VOID dark/light palettes, fluid type scale (`--text-xs` …
+  `--text-hero`), spacing, radii, shadows, font stacks
+- **VOID component primitives** in `index.css` — `.btn`, `.card`, `.badge`, `.section-*`, `.hero`,
+  `.input`, `.table`, `.empty-state`, focus/selection styles
+- **Fonts** (`index.html`) — Geist, Geist Mono, DM Serif Display (replaces IBM Plex Sans/Mono)
+
+**Changed**
+
+- **`index.css`** — Tailwind `@theme` semantic names (`canvas`, `ink`, `accent`, …) map to VOID CSS
+  variables (V-06: minimal component churn); Kamino `html.dark` hex overrides removed
+- **Theme mechanism** — `data-theme="dark|light"` on `<html>` (replaces `classList.toggle('dark')`);
+  Tailwind `dark:` variant maps to `[data-theme="dark"]`
+- **`theme.ts`** / bootstrap script — `setAttribute('data-theme', …)` before paint; default
+  `data-theme="dark"` on `<html>`
+
+### Phase VOID-B — App shell
+
+**Added**
+
+- **VOID nav CSS** — `.nav` (56px sticky blur), `.nav-inner`, `.nav-logo`, `.nav-link`, `.nav-mobile`,
+  `.theme-toggle`, `.skip-link`
+- **VOID crosshair logo** — crosshair frame + violet A glyph in header (V-07)
+- **Skip link** — “Skip to content” → `#main-content` on `PageShell`
+
+**Changed**
+
+- **`AppHeader`** — single 56px row; tagline row and `TAGLINES` map removed (copy lives in landing
+  hero); Foundry `Soon` badge uses `.badge.badge-default`
+- **`AppNavLink`** — VOID nav-link styling; active = `surface-2` background; muted Foundry uses
+  `.nav-link--muted`
+- **`ThemeToggle`** — `locked` prop removed; full interactive toggle on Mill and all routes (V-03)
+- **`AppFooter`** — minimal bar on `surface-2` (`bg-cream`); unified copy across routes
+- **`PageShell`** — `--content-wide` (1200px) landing, `--content-default` (960px) elsewhere;
+  `console-field` removed; `#main-content` skip target
+
+**Removed**
+
+- **`App.tsx`** — `console-root dark` route wrapper (unified global VOID surface)
+
+**Changed (E2E)**
+
+- Foundry nav assertion: `opacity-75` → `nav-link--muted`
+- `mill primary bays wear registration brackets` → `mill has working theme toggle`
+
+### Phase VOID-C — Shared layout components
+
+**Changed**
+
+- **`SectionHeading`** — kicker → `.section-eyebrow` (violet rule `::before`); title → `.section-title`
+  (DM Serif, `--text-2xl`); lead → `.section-desc`; API unchanged — all Landing and How it works
+  call sites pick up VOID grammar automatically
+
+### Phase VOID-D — Monument views
+
+**Added (CSS)**
+
+- `.card-static`, `.card-inert`, `.card-highlight`, `.announce`, `.details-card`, `.grid-2-plus-1`,
+  `.pipeline-grid`, `.section-muted`, `.card-title`, `.card-desc`
+
+**Changed**
+
+- **`LandingView`** — `.hero` with pulse badge and DM Serif GEO H1 (text unchanged); compare and
+  steps use asymmetric `.grid-2-plus-1` (not `sm:grid-cols-3`); chambers Mill/Foundry as
+  `.card` / `.card-inert`; CTA uses `.card-highlight` (no left-border callout); Quick answers as
+  `.details-card`
+- **`HowItWorksView`** — quick answer in `.card-static`; pipeline `.pipeline-grid`; three-path table
+  → 2+1 card grid; FontForge comparison → `.table-wrap` + `.table`; parameters section →
+  `.card-highlight`; FAQ → `.details-card`
+- **`FoundryPlaceholderView`** — `.announce` status strip with pulse dot; wireframe → `.card-inert`
+  dashed pattern; `.hero-title` page H1
+
+**Removed (monument routes)**
+
+- `.section-band`, `.section-band--hero`, `.section-band--muted`, `.callout` left-border accents,
+  `.panel`, `.inert-frame`, `.badge-inert`, `.status-banner-inert` from view markup
+
+**Preserved (GEO / E2E)**
+
+- Landing H1, CTA **“Try with sample letter A”**, section IDs (`#hero` … `#cta`), Quick Answer
+  strings, compare deep link to `/how-it-works#fontforge-heading`
+
+**Changed (E2E)**
+
+- Landing chapters: `.section-band--*` → `.hero` + `#compare .grid-2-plus-1`
+- Foundry: `.status-banner-inert` → `.announce`; `.inert-frame` → `.card-inert`
+- How it works: `main table` count 2 → 1 (three-path is cards); asserts `.table-wrap` + `.grid-2-plus-1`
+
+### Phase VOID-E — Mill tool UI
+
+**Added (CSS)**
+
+- Mill tool classes — `.mill-view`, `.mill-toolbar`, `.mill-steps`, `.stage-bay`,
+  `.stage-bay-collapsed`, `.stage-bay-nested`, `.mill-kicker`, `.dropzone`, `.pipeline-tag`,
+  `.gate-panel`, `.gate-slot`, `.mill-toast`, `.alert-warning`, `.alert-error`, `.mono-data`,
+  `.mill-disclosure`
+
+**Changed**
+
+- **`StudioView`** and all Mill/console components — Kamino `console-*` classes replaced with VOID
+  equivalents; buttons use explicit `btn btn-primary` / `btn-secondary` / `btn-ghost`
+- **`StageBay` / `Bay`** — collapsed strip + expanded VOID card; active bay gets border glow
+  (registration `::after` brackets removed)
+- **`ReadoutLabel`** → `.mill-kicker`; **`StatusPill`** → `.badge` variants; **`PipelineGraph`** →
+  mono tags on `surface-3`; **`MillStepIndicator`** → step badges
+- **`DropZone`** → dashed `.dropzone`; **`Gate1Panel` / `Gate2Panel`** → `.gate-panel` with
+  warning/success borders; gate min-height slots preserved (`gate-slot` 26rem)
+- **`Toast`** → fixed `.mill-toast` with 2px left primary accent (not full callout bar)
+- **`GlyphGrid`**, **`PreviewPanel`**, **`ExportPanel`**, **`RunView`**, **`PartialFontWarning`** —
+  nested `.stage-bay-nested` shells; validation uses `.badge-success` / `.badge-error` / `.badge-warning`
+
+**Removed**
+
+- **`src/lib/consoleTheme.css`** — deleted (~13 KB Kamino console tokens and bay/gate styles)
+- **`main.tsx`** — `consoleTheme.css` import
+- **All `console-*` class names** from `src/` (verified: `rg 'console-' src/` → no matches)
+- **`.console-root`** transition block and `.dark` fallback from `@custom-variant dark`
+
+**Added (E2E)**
+
+- `mill primary bays use VOID card styling` — asserts `.stage-bay` border-radius ≥ 12px
+
+### Behaviour preserved
+
+- Stage bay collapse/expand, gate placement in REVIEW, sticky Mill toolbar, upload → generate →
+  download, gate 1/2 accept flow, nav order (Mill · How it works · Foundry), prerender/FAQ strings
+- Header height stable across routes (56px desktop; e2e variance ≤ 2px)
+
+### Not changed (by design)
+
+- Pipeline, agent, WASM, store, export, recipe logic
+- `geoPrerenderContent.json` copy strings
+- OG image assets (post-deploy visual task per migration plan)
+
+### Supersedes
+
+- Kamino visual tokens in [kamino-design.md](plans/kamino-design.md) (historical context only)
+- UI-P1–P4 visual-layer items in [ui-ux-polish-review.md](executing/ui-ux-polish-review.md) —
+  Mill *behaviour* contracts from UI-P3 remain valid
+
+### Tests
+
+- **45** unit/browser tests (unchanged count)
+- **19** Playwright e2e tests (was 18; +1 VOID card styling assertion on Mill)
 
 ---
 

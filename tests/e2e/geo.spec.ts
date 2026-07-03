@@ -32,7 +32,9 @@ test.describe('GEO pillar', () => {
       }),
     ).toBeVisible()
     await expect(page.getByText('Last updated: July 2026')).toBeVisible()
-    await expect(page.locator('main table')).toHaveCount(2)
+    await expect(page.locator('main table')).toHaveCount(1)
+    await expect(page.locator('main .table-wrap')).toBeVisible()
+    await expect(page.locator('main .grid-2-plus-1')).toBeVisible()
     await expect(
       page.locator('main').getByText(/53 automated tests — unit, browser, and end-to-end/),
     ).toBeVisible()

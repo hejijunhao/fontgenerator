@@ -27,8 +27,8 @@ test.describe('font generator smoke', () => {
       await expect(page.locator(`#${id}`)).toBeVisible()
     }
 
-    await expect(page.locator('.section-band--hero')).toBeVisible()
-    await expect(page.locator('.section-band--muted')).toBeVisible()
+    await expect(page.locator('.hero')).toBeVisible()
+    await expect(page.locator('#compare .grid-2-plus-1')).toBeVisible()
     await expect(page.getByRole('link', { name: 'See full comparison table →' })).toBeVisible()
     await expect(page.locator('details summary', { hasText: 'Quick answers' })).toBeVisible()
   })
@@ -156,14 +156,14 @@ test.describe('font generator smoke', () => {
 
   test('foundry placeholder → Mill CTA', async ({ page }) => {
     await page.goto('/foundry')
-    await expect(page.locator('.status-banner-inert')).toContainText('Not available')
-    await expect(page.locator('.status-banner-inert')).toContainText('Mill is live today')
+    await expect(page.locator('.announce')).toContainText('Not available')
+    await expect(page.locator('.announce')).toContainText('Mill is live today')
     await expect(
       page.locator('main h1', {
         hasText: /Foundry — agentic glyph creation/i,
       }),
     ).toBeVisible()
-    await expect(page.locator('.inert-frame').first()).toBeVisible()
+    await expect(page.locator('.card-inert').first()).toBeVisible()
     await page.getByRole('link', { name: 'Use the Mill today' }).first().click()
     await expect(page).toHaveURL(/\/mill$/)
     await expect(page.getByLabel('Drop PNG glyph images here')).toBeVisible()
@@ -177,19 +177,24 @@ test.describe('font generator smoke', () => {
     const links = nav.getByRole('link')
     await expect(links.nth(0)).toHaveText(/Mill/)
     await expect(links.nth(2)).toHaveText(/Foundry/)
-    await expect(links.nth(2)).toHaveClass(/opacity-75/)
+    await expect(links.nth(2)).toHaveClass(/nav-link--muted/)
   })
 
-  test('mill primary bays wear registration brackets', async ({ page }) => {
+  test('mill has working theme toggle', async ({ page }) => {
     await page.goto('/mill')
 
-    const bay = page.locator('.console-bay').first()
+    const toggle = page.getByRole('button', { name: /Switch to (light|dark) mode/ })
+    await expect(toggle).toBeVisible()
+    await expect(toggle).toBeEnabled()
+  })
+
+  test('mill primary bays use VOID card styling', async ({ page }) => {
+    await page.goto('/mill')
+
+    const bay = page.locator('.stage-bay').first()
     await expect(bay).toBeVisible()
 
-    const hasBrackets = await bay.evaluate((el) => {
-      const after = window.getComputedStyle(el, '::after')
-      return after.content !== 'none' && after.backgroundImage !== 'none'
-    })
-    expect(hasBrackets).toBe(true)
+    const radius = await bay.evaluate((el) => getComputedStyle(el).borderRadius)
+    expect(parseFloat(radius)).toBeGreaterThanOrEqual(12)
   })
 })

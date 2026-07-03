@@ -23,14 +23,14 @@ export function GlyphGrid() {
       : null
 
   return (
-    <section className="console-bay-nested space-y-3 p-4">
+    <section className="stage-bay-nested space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="console-readout">Glyphs ({glyphs.length})</p>
-        <p className="console-mono-data text-xs text-muted">A, B, C… by upload order</p>
+        <p className="mill-kicker">Glyphs ({glyphs.length})</p>
+        <p className="mono-data text-muted">A, B, C… by upload order</p>
       </div>
 
       {recipeMismatch && (
-        <p role="alert" className="console-alert-warn px-3 py-2 text-xs">
+        <p role="alert" className="alert-warning px-3 py-2 text-xs">
           {recipeMismatch}
         </p>
       )}
@@ -39,7 +39,7 @@ export function GlyphGrid() {
         {glyphs.map((glyph, index) => (
           <li
             key={glyph.id}
-            className="group relative overflow-hidden border border-border bg-surface-muted"
+            className="group overflow-hidden rounded-lg border border-border bg-surface-muted"
           >
             <div className="flex aspect-square items-center justify-center bg-preview p-2">
               <img
@@ -49,7 +49,7 @@ export function GlyphGrid() {
               />
             </div>
             <div className="flex items-center justify-between gap-1 border-t border-border bg-surface-strong px-2 py-1.5">
-              <span className="console-mono-data truncate text-xs font-medium text-subtle">
+              <span className="mono-data truncate font-medium text-subtle">
                 {String.fromCodePoint(glyph.codepoint)}
                 <span className="ml-1 font-normal text-muted">
                   U+{glyph.codepoint.toString(16).toUpperCase().padStart(4, '0')}
@@ -60,7 +60,7 @@ export function GlyphGrid() {
                   type="button"
                   aria-label={`Remove glyph ${String.fromCodePoint(glyph.codepoint)}`}
                   onClick={() => removeGlyph(glyph.id)}
-                  className="shrink-0 rounded-md px-1.5 py-0.5 text-xs text-muted transition-colors hover:text-[var(--state-fail)]"
+                  className="btn btn-ghost shrink-0 !px-1.5 !py-0.5 text-xs"
                 >
                   Remove
                 </button>

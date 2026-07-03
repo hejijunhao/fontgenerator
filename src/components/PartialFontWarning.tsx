@@ -9,7 +9,7 @@ export function PartialFontWarning({ codepoints }: PartialFontWarningProps) {
   if (report.warnings.length === 0) return null
 
   return (
-    <div role="status" className="console-alert-warn space-y-1 px-4 py-3 text-sm">
+    <div role="status" className="alert-warning space-y-1 px-4 py-3 text-sm">
       <p className="font-medium">Partial font</p>
       <ul className="list-inside list-disc space-y-0.5 text-xs opacity-90">
         {report.warnings.map((w) => (

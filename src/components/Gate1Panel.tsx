@@ -13,18 +13,18 @@ export function Gate1Panel({ gate, sourcePreviewUrl, handlers }: Gate1PanelProps
   const [character, setCharacter] = useState(gate.proposedCharacter)
 
   return (
-    <section
-      className="console-gate min-h-[24rem] space-y-4 p-5"
-      aria-label="Gate 1 — trace review"
-    >
+    <section className="gate-panel gate-panel--trace" aria-label="Gate 1 — trace review">
       <header className="space-y-1">
-        <p className="console-gate-label">Gate 1 — Trace review</p>
+        <p className="gate-panel-label">
+          Gate 1 — Trace review{' '}
+          <span className="badge badge-warning">Review required</span>
+        </p>
         <p className="text-sm text-muted">{gate.summary}</p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <figure className="space-y-2">
-          <figcaption className="console-readout">Source PNG</figcaption>
+          <figcaption className="mill-kicker">Source PNG</figcaption>
           <div className="flex items-center justify-center border border-border bg-preview p-3">
             <img
               src={sourcePreviewUrl}
@@ -34,7 +34,7 @@ export function Gate1Panel({ gate, sourcePreviewUrl, handlers }: Gate1PanelProps
           </div>
         </figure>
         <figure className="space-y-2">
-          <figcaption className="console-readout">Traced vector</figcaption>
+          <figcaption className="mill-kicker">Traced vector</figcaption>
           {gate.tracePreviewPng ? (
             <div className="flex items-center justify-center border border-border bg-preview-frame p-3">
               <img
@@ -53,7 +53,7 @@ export function Gate1Panel({ gate, sourcePreviewUrl, handlers }: Gate1PanelProps
 
       <div className="flex flex-wrap items-end gap-3">
         <label className="space-y-1">
-          <span className="console-readout">Proposed character</span>
+          <span className="mill-kicker">Proposed character</span>
           <input
             type="text"
             maxLength={2}
@@ -65,14 +65,14 @@ export function Gate1Panel({ gate, sourcePreviewUrl, handlers }: Gate1PanelProps
         <button
           type="button"
           onClick={() => character && handlers.fixCharacter(character)}
-          className="btn-secondary px-4 py-2"
+          className="btn btn-secondary"
         >
           Fix character
         </button>
       </div>
 
       <label className="block space-y-1">
-        <span className="console-readout">Re-trace nudge (optional)</span>
+        <span className="mill-kicker">Re-trace nudge (optional)</span>
         <textarea
           value={nudge}
           onChange={(e) => setNudge(e.target.value)}
@@ -83,13 +83,13 @@ export function Gate1Panel({ gate, sourcePreviewUrl, handlers }: Gate1PanelProps
       </label>
 
       <div className="flex flex-wrap gap-3">
-        <button type="button" onClick={() => handlers.accept()} className="btn-primary">
+        <button type="button" onClick={() => handlers.accept()} className="btn btn-primary">
           Accept trace
         </button>
         <button
           type="button"
           onClick={() => handlers.retrace(nudge.trim() || 'sharper corners')}
-          className="btn-secondary"
+          className="btn btn-secondary"
         >
           Re-trace
         </button>

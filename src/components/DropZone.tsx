@@ -52,18 +52,15 @@ export function DropZone() {
         handleFiles(e.dataTransfer.files)
       }}
       data-dragging={isDragging || undefined}
-      className={[
-        'console-dropzone flex cursor-pointer flex-col items-center justify-center gap-3 px-8 py-16 text-center transition-colors',
-        isBusy ? 'cursor-not-allowed opacity-60' : '',
-      ].join(' ')}
+      className="dropzone"
     >
-      <div className="console-emblem text-2xl font-medium">A</div>
+      <div className="dropzone-mark">A</div>
       <div className="space-y-1">
         <p className="text-lg font-medium">Drop PNG glyphs here</p>
         <p className="text-sm text-muted">One or more letters — batch fonts assemble at export</p>
       </div>
       {glyphs.length > 0 && (
-        <p className="console-mono-data text-sm font-medium text-subtle">
+        <p className="mono-data font-medium text-subtle">
           {glyphs.length} PNG{glyphs.length === 1 ? '' : 's'} ready
         </p>
       )}

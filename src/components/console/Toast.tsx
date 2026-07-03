@@ -16,7 +16,7 @@ export function Toast({ message, onDismiss, durationMs = 2400 }: ToastProps) {
   if (!message) return null
 
   return (
-    <div className="console-toast" role="status" aria-live="polite">
+    <div className="mill-toast" role="status" aria-live="polite">
       {message}
     </div>
   )

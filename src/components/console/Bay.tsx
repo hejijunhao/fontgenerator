@@ -10,17 +10,23 @@ type BayProps = {
 }
 
 export function Bay({ kicker, signal, nested, children, className = '' }: BayProps) {
+  if (nested) {
+    return (
+      <section className={['stage-bay-nested space-y-4', className].join(' ')}>
+        <ReadoutLabel signal={signal}>{kicker}</ReadoutLabel>
+        {children}
+      </section>
+    )
+  }
+
   return (
     <section
-      className={[
-        nested ? 'console-bay-nested' : 'console-bay',
-        'space-y-4 p-4',
-        className,
-      ].join(' ')}
+      className={['stage-bay space-y-4', signal ? 'stage-bay--active' : '', className]
+        .filter(Boolean)
+        .join(' ')}
     >
-      <header className="space-y-2">
+      <header>
         <ReadoutLabel signal={signal}>{kicker}</ReadoutLabel>
-        <div className="console-registration-band" aria-hidden />
       </header>
       {children}
     </section>

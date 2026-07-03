@@ -114,10 +114,10 @@ export function StudioView() {
   ) : null
 
   return (
-    <main className="console-mill flex flex-1 flex-col gap-4">
+    <main className="mill-view">
       {!wasmReady && <WasmWarmupBanner />}
 
-      <div className="console-mill-toolbar flex flex-wrap items-center justify-between gap-3">
+      <div className="mill-toolbar">
         <MillStepIndicator activeStage={activeStage} />
         {statusPill}
       </div>
@@ -148,7 +148,7 @@ export function StudioView() {
             type="button"
             onClick={() => generate()}
             disabled={!canGenerate}
-            className="btn-primary"
+            className="btn btn-primary"
           >
             {isGenerating ? 'Generating…' : 'Generate (no agent)'}
           </button>
@@ -157,25 +157,25 @@ export function StudioView() {
             type="button"
             onClick={() => runAgent()}
             disabled={!canRunAgent}
-            className="btn-secondary"
+            className="btn btn-secondary"
           >
             {isAgentRunning && !atGate ? 'Agent running…' : 'Run agent'}
           </button>
 
           {(isAgentRunning || atGate) && (
-            <button type="button" onClick={() => cancelAgent()} className="btn-ghost">
+            <button type="button" onClick={() => cancelAgent()} className="btn btn-ghost">
               Cancel
             </button>
           )}
 
           {glyphs.length > 0 && !busy && (
-            <button type="button" onClick={() => clearProject()} className="btn-ghost">
+            <button type="button" onClick={() => clearProject()} className="btn btn-ghost">
               Clear
             </button>
           )}
         </div>
 
-        <details className="console-disclosure console-bay-nested p-3">
+        <details className="mill-disclosure stage-bay-nested">
           <summary>Agent settings</summary>
           <AgentSettings embedded />
         </details>
@@ -185,7 +185,7 @@ export function StudioView() {
         )}
 
         {glyph?.status === 'exporting' && (
-          <div role="status" className="console-mono-data text-xs text-muted">
+          <div role="status" className="mono-data text-muted">
             Exporting font…
           </div>
         )}
@@ -199,12 +199,8 @@ export function StudioView() {
         ) : null}
 
         {glyph?.error && (
-          <div
-            role="alert"
-            className="console-bay-nested border-l-2 p-3 text-sm"
-            style={{ borderColor: 'var(--state-fail)', color: 'var(--state-fail)' }}
-          >
-            <span className="console-mono-data font-medium">Pipeline failed.</span> {glyph.error}
+          <div role="alert" className="alert-error stage-bay-nested">
+            <span className="mono-data font-medium">Pipeline failed.</span> {glyph.error}
           </div>
         )}
       </StageBay>
@@ -223,7 +219,7 @@ export function StudioView() {
           />
         )}
 
-        <div className={atGate ? 'console-gate-slot' : undefined}>
+        <div className={atGate ? 'gate-slot' : undefined}>
           {glyph?.status === 'gate1' && glyph.gate && gateHandlers && (
             <Gate1Panel
               gate={glyph.gate}
@@ -251,9 +247,7 @@ export function StudioView() {
         )}
 
         {glyphs.length > 0 && !glyph?.previewPng && !atGate && (
-          <p className="console-mono-data text-xs text-muted">
-            Run Generate to populate preview.
-          </p>
+          <p className="mono-data text-muted">Run Generate to populate preview.</p>
         )}
       </StageBay>
 
@@ -286,12 +280,12 @@ function WasmWarmupBanner() {
   return (
     <div
       role="status"
-      className="console-bay flex items-center gap-4 p-4"
+      className="card-static flex items-center gap-4"
       aria-label="Warming up WASM modules"
     >
-      <ConsoleEmblem />
+      <div className="dropzone-mark">A</div>
       <div className="space-y-0.5">
-        <p className="console-mono-data text-xs tracking-wide text-muted uppercase">
+        <p className="mono-data font-medium tracking-wide text-muted uppercase">
           warming up the mill…
         </p>
         <p className="text-xs text-subtle">First load fetches ~1.2 MB of WASM (potrace, wawoff2)</p>
@@ -300,22 +294,9 @@ function WasmWarmupBanner() {
   )
 }
 
-function ConsoleEmblem() {
-  return (
-    <div className="console-emblem" aria-hidden>
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-ink">
-        <path
-          d="M7 1.5 3 12.5h2l.8-2.2h4.4L11 12.5h2L9 1.5H7zm-.8 5.2 1.6-4.4 1.6 4.4H6.2z"
-          fill="currentColor"
-        />
-      </svg>
-    </div>
-  )
-}
-
 function IdleHint() {
   return (
-    <p className="console-mono-data text-xs text-muted">
+    <p className="mono-data text-muted">
       Try <span className="text-ink">A-KaminoDeco.png</span> — or{' '}
       <a href={routeHref('how-it-works')} className="font-medium text-ink hover:underline">
         read how it works

@@ -14,15 +14,15 @@ export function PreviewPanel({
   character,
 }: PreviewPanelProps) {
   return (
-    <div className="console-bay-nested space-y-4 p-4">
+    <div className="stage-bay-nested space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="console-readout">Preview</p>
+        <p className="mill-kicker">Preview</p>
         {validation && <ValidationBadges validation={validation} />}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <figure className="space-y-2">
-          <figcaption className="console-readout">Source PNG</figcaption>
+          <figcaption className="subsection-title">Source PNG</figcaption>
           {sourcePreviewUrl ? (
             <div className="flex items-center justify-center border border-border bg-preview p-4">
               <img
@@ -37,7 +37,7 @@ export function PreviewPanel({
         </figure>
 
         <figure className="space-y-2">
-          <figcaption className="console-readout">
+          <figcaption className="subsection-title">
             Built font — &ldquo;{character}&rdquo;
           </figcaption>
           {renderPreviewUrl ? (
@@ -70,10 +70,7 @@ function ValidationBadges({ validation }: { validation: ValidationResult }) {
     <div className="flex flex-wrap gap-2">
       <Badge ok={validation.roundTripOk} label="Round-trip parse" />
       {validation.warnings.length > 0 && (
-        <span
-          className="console-badge-warn px-2.5 py-0.5 text-xs font-medium"
-          title={validation.warnings.join('; ')}
-        >
+        <span className="badge badge-warning" title={validation.warnings.join('; ')}>
           {validation.warnings.length} warning{validation.warnings.length === 1 ? '' : 's'}
         </span>
       )}
@@ -83,12 +80,7 @@ function ValidationBadges({ validation }: { validation: ValidationResult }) {
 
 function Badge({ ok, label }: { ok: boolean; label: string }) {
   return (
-    <span
-      className={[
-        'px-2.5 py-0.5 text-xs font-medium',
-        ok ? 'console-badge-ok' : 'console-badge-fail',
-      ].join(' ')}
-    >
+    <span className={ok ? 'badge badge-success' : 'badge badge-error'}>
       {ok ? '✓' : '✗'} {label}
     </span>
   )

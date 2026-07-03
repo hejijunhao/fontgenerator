@@ -27,11 +27,7 @@ export function PipelineGraph({ currentStep, isActive }: PipelineGraphProps) {
   const complete = currentStep === 'done'
 
   return (
-    <div
-      className="flex items-center gap-1"
-      role="list"
-      aria-label="Pipeline progress"
-    >
+    <div className="pipeline-tags" role="list" aria-label="Pipeline progress">
       {NODES.map((node, index) => {
         const isCurrent = isActive && activeIndex === index
         const isComplete = complete || (activeIndex >= 0 && index < activeIndex)
@@ -40,9 +36,13 @@ export function PipelineGraph({ currentStep, isActive }: PipelineGraphProps) {
         return (
           <div key={node.id} className="flex min-w-0 flex-1 items-center gap-1" role="listitem">
             <span
-              className="console-pipeline-node shrink-0"
-              data-active={isCurrent || undefined}
-              data-complete={isComplete || undefined}
+              className={[
+                'pipeline-tag',
+                isCurrent ? 'pipeline-tag--active' : '',
+                isComplete ? 'pipeline-tag--complete' : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
               aria-current={isCurrent ? 'step' : undefined}
               title={node.id}
             >
@@ -50,8 +50,9 @@ export function PipelineGraph({ currentStep, isActive }: PipelineGraphProps) {
             </span>
             {index < NODES.length - 1 && (
               <span
-                className="console-pipeline-edge"
-                data-complete={edgeComplete || undefined}
+                className={['pipeline-edge', edgeComplete ? 'pipeline-edge--complete' : '']
+                  .filter(Boolean)
+                  .join(' ')}
                 aria-hidden
               />
             )}
