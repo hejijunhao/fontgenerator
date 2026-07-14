@@ -8,7 +8,7 @@ const fixturePng = path.join(
 )
 
 test.describe('font generator smoke', () => {
-  test('landing → Mill navigation', async ({ page }) => {
+  test('landing → Export navigation', async ({ page }) => {
     await page.goto('/')
     await expect(
       page.locator('main h1', {
@@ -16,7 +16,7 @@ test.describe('font generator smoke', () => {
       }),
     ).toBeVisible()
     await page.getByRole('link', { name: 'Try with sample letter A' }).first().click()
-    await expect(page).toHaveURL(/\/mill$/)
+    await expect(page).toHaveURL(/\/export$/)
     await expect(page.getByLabel('Drop PNG glyph images here')).toBeVisible()
   })
 
@@ -33,8 +33,8 @@ test.describe('font generator smoke', () => {
     await expect(page.locator('details summary', { hasText: 'Quick answers' })).toBeVisible()
   })
 
-  test('mill collapses inactive stage bays', async ({ page }) => {
-    await page.goto('/mill')
+  test('export console collapses inactive stage bays', async ({ page }) => {
+    await page.goto('/export')
     await page.getByLabel('Drop PNG glyph images here').click()
     await page.locator('input[type="file"]').setInputFiles(fixturePng)
 
@@ -46,7 +46,7 @@ test.describe('font generator smoke', () => {
   test('no-agent upload → generate → TTF download', async ({ page }) => {
     const downloadPromise = page.waitForEvent('download', { timeout: 60_000 })
 
-    await page.goto('/mill')
+    await page.goto('/export')
     await page.getByLabel('Drop PNG glyph images here').click()
     await page.locator('input[type="file"]').setInputFiles(fixturePng)
 
@@ -62,7 +62,7 @@ test.describe('font generator smoke', () => {
   })
 
   test('gate panels accept flow (scripted, no model)', async ({ page }) => {
-    await page.goto('/mill')
+    await page.goto('/export')
     await page.getByLabel('Drop PNG glyph images here').click()
     await page.locator('input[type="file"]').setInputFiles(fixturePng)
 
@@ -140,7 +140,7 @@ test.describe('font generator smoke', () => {
   test('header height stable across routes', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 })
 
-    const paths = ['/', '/foundry', '/mill', '/how-it-works'] as const
+    const paths = ['/', '/generate', '/export', '/how-it-works'] as const
     const heights: number[] = []
 
     for (const path of paths) {
@@ -154,42 +154,49 @@ test.describe('font generator smoke', () => {
     expect(Math.max(...heights) - Math.min(...heights)).toBeLessThanOrEqual(2)
   })
 
-  test('foundry placeholder → Mill CTA', async ({ page }) => {
-    await page.goto('/foundry')
+  test('generate placeholder → Export CTA', async ({ page }) => {
+    await page.goto('/generate')
     await expect(page.locator('.announce')).toContainText('Not available')
-    await expect(page.locator('.announce')).toContainText('Mill is live today')
+    await expect(page.locator('.announce')).toContainText('Export is live today')
     await expect(
       page.locator('main h1', {
-        hasText: /Foundry — agentic glyph creation/i,
+        hasText: /Generate — agentic glyph creation/i,
       }),
     ).toBeVisible()
     await expect(page.locator('.card-inert').first()).toBeVisible()
-    await page.getByRole('link', { name: 'Use the Mill today' }).first().click()
-    await expect(page).toHaveURL(/\/mill$/)
+    await page.getByRole('link', { name: 'Use Export today' }).first().click()
+    await expect(page).toHaveURL(/\/export$/)
     await expect(page.getByLabel('Drop PNG glyph images here')).toBeVisible()
   })
 
-  test('primary nav prioritizes Mill and de-emphasizes Foundry', async ({ page }) => {
+  test('primary nav order is Browse, Generate, Export, How it works', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 })
     await page.goto('/')
 
     const nav = page.getByRole('navigation', { name: 'Primary' })
+
+    // Browse has no route yet, so it renders inert rather than as a link.
+    const browse = nav.locator('[aria-disabled="true"]')
+    await expect(browse).toHaveText(/Browse/)
+    await expect(nav.locator('.nav-link').nth(0)).toHaveText(/Browse/)
+
     const links = nav.getByRole('link')
-    await expect(links.nth(0)).toHaveText(/Mill/)
-    await expect(links.nth(2)).toHaveText(/Foundry/)
-    await expect(links.nth(2)).toHaveClass(/nav-link--muted/)
+    await expect(links.nth(0)).toHaveText(/Generate/)
+    await expect(links.nth(0)).toHaveClass(/nav-link--muted/)
+    await expect(links.nth(1)).toHaveText(/Export/)
+    await expect(links.nth(2)).toHaveText(/How it works/)
   })
 
-  test('mill has working theme toggle', async ({ page }) => {
-    await page.goto('/mill')
+  test('export console has working theme toggle', async ({ page }) => {
+    await page.goto('/export')
 
     const toggle = page.getByRole('button', { name: /Switch to (light|dark) mode/ })
     await expect(toggle).toBeVisible()
     await expect(toggle).toBeEnabled()
   })
 
-  test('mill primary bays use VOID card styling', async ({ page }) => {
-    await page.goto('/mill')
+  test('export console primary bays use VOID card styling', async ({ page }) => {
+    await page.goto('/export')
 
     const bay = page.locator('.stage-bay').first()
     await expect(bay).toBeVisible()

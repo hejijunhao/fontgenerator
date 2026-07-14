@@ -6,6 +6,7 @@ All notable changes to Glyphmill are documented here. The format is based on
 
 ## Index
 
+- **[0.8.0](#080--2026-07-14)** — Nav rename and reorder: Foundry → Generate, Mill → Export, inert Browse; routes `/generate` and `/export`
 - **[0.7.0](#070--2026-07-03)** — VOID design system migration (Phases VOID-A–E): unified dark-first UI, Kamino visual layer replaced
 - **[0.6.0](#060--2026-07-02)** — UI/UX polish pass (Phases UI-P1–P4): shell stability, landing sections, Mill micro-UX, design system
 - **[0.5.1](#051--2026-07-02)** — Post-review hardening: shared GEO content, path redirects, build-time sitemap
@@ -17,6 +18,133 @@ All notable changes to Glyphmill are documented here. The format is based on
 - **[0.2.0](#020--2026-07-02)** — Glyphmill rebrand, light/dark mode, polished UI shell
 - **[0.1.1](#011--2026-07-02)** — CI hardening, lint fixes, repo hygiene
 - **[0.1.0](#010--2026-07-01)** — Initial v1: browser PNG → font pipeline with optional agent
+
+---
+
+## [0.8.0] — 2026-07-14
+
+**Nav rename and reorder** — the header nav becomes `Browse · Generate · Export · How it works`.
+`Foundry` → `Generate` and `Mill` → `Export` propagate through route IDs, URLs, public copy, page
+metadata, JSON-LD, OG images, static GEO files, and the build scripts that regenerate them.
+**No pipeline, agent, store, gate, or export-format changes** — conversion behaviour is untouched.
+
+### Why
+
+The two-chamber workshop metaphor named the chambers after the workshop (`Foundry`, `Mill`) rather
+than after what the user does in them. The nav now reads as the workflow: browse existing work,
+generate letterforms, export a font. `Browse` has no destination designed yet, so it ships inert
+rather than linking somewhere misleading.
+
+The rename went all the way to the URLs rather than stopping at labels so that the nav, the address
+bar, the page copy, and the sitemap all agree. A labels-only change would have left the nav saying
+"Export" while the page it opened still called itself the Mill.
+
+### Changed — routing
+
+- **`src/lib/navigation.ts`** — `AppRoute` is now `landing | generate | export | how-it-works`
+  (was `landing | foundry | mill | how-it-works`); `ROUTE_PATHS` serves `/generate` and `/export`;
+  `routeLabel()` returns `Generate` / `Export`
+- **`parseLegacyHash()`** — v0.2 hash roots (`#`, `#/`) resolve to `export` (was `mill`)
+- **`src/App.tsx`** — route guards switched to `export` / `generate`; view components unchanged
+
+### Added — legacy redirects
+
+`LEGACY_PATH_REDIRECTS` now covers every superseded path, each resolving in a **single hop** via
+`replaceState`:
+
+| Old path | Resolves to | Note |
+| --- | --- | --- |
+| `/mill` | `/export` | new in 0.8.0 |
+| `/foundry` | `/generate` | new in 0.8.0 |
+| `/studio` | `/export` | retargeted (was `/mill`) |
+
+`/studio` is a pre-0.4.0 path that previously redirected to `/mill`. Rather than let it chain
+`/studio → /mill → /export`, it now points at `/export` directly, so the oldest links still resolve
+without a double redirect.
+
+### Changed — header and footer
+
+- **`src/components/AppHeader.tsx`** — order is now `Browse · Generate (Soon) · Export ·
+  How it works`, applied to both the desktop (`Primary`) and mobile (`Primary mobile`) navs
+- **`src/components/AppNavLink.tsx`** — new `AppNavInert` export renders a nav entry with no route
+  behind it: a `<span>` rather than an `<a>`, `aria-disabled="true"`, `.nav-link--muted`
+- **`src/components/AppFooter.tsx`** — labels follow the rename; its existing order already matched
+
+### Changed — public copy
+
+Convention: `Generate` and `Export` are proper nouns used **without an article** ("Open Export", not
+"Open the Export"), replacing the article-taking "the Mill" / "the Foundry".
+
+The **milling metaphor is deliberately preserved** wherever it refers to the brand rather than the
+route — the product is still called Glyphmill. Left intact: `Browser font mill` (landing hero
+badge), `browser-native mill` (how-it-works lead), `the browser mill` (comparison lead),
+`Ready to mill a font?` (landing CTA), `warming up the mill…` (`StudioView`), `Console font mill`
+(Export OG image).
+
+Files touched: **`LandingView.tsx`**, **`HowItWorksView.tsx`**, **`FoundryPlaceholderView.tsx`**,
+**`howItWorksContent.ts`**, and **`geoPrerenderContent.json`** (quick answers, HowTo steps, and
+three FAQ entries — including "What is the Foundry chamber?" → "What is the Generate chamber?").
+
+### Changed — metadata, OG images, GEO
+
+- **`src/lib/pageMeta.ts`** — `generate` / `export` keys; titles, descriptions, `path`, and
+  `ogImage` (`/og/generate.png`, `/og/export.png`)
+- **`src/components/layout/JsonLd.tsx`** — `SoftwareApplication.url` → `/export`; HowTo description
+  reworded
+- **`public/og/mill.png` → `public/og/export.png`** and **`public/og/foundry.png` →
+  `public/og/generate.png`** (`git mv`)
+- **`public/sitemap.xml`**, **`public/llms.txt`** — new paths
+
+### Changed — build scripts (these would have silently reverted the rename)
+
+Both post-build scripts regenerate the artifacts above on every `npm run build`, so editing the
+source files alone was not sufficient:
+
+- **`scripts/generate-og-images.mjs`** — `generateMill()` → `generateExport()` now writes
+  `export.png`; `generateFoundry()` → `generateGenerate()` now writes `generate.png`; eyebrow
+  `GLYPHMILL · MILL` → `GLYPHMILL · EXPORT`. Left unfixed, every build would have re-emitted
+  `mill.png` / `foundry.png` and the new `ogImage` paths in `pageMeta.ts` would have 404'd.
+- **`scripts/prerender-pillars.mjs`** — sitemap routes now `/export` + `/generate`; JSON-LD uses
+  `absoluteUrl('/export')`. This script writes `dist/sitemap.xml`, which overrides the copied
+  `public/` file — so it, not `public/sitemap.xml`, is the effective source of truth.
+
+### Changed — tests
+
+- **`tests/unit/navigation.test.ts`** — rewritten for the new route IDs; asserts `/mill` and
+  `/foundry` no longer parse as routes, and that `/studio` reaches `/export` in one hop
+- **`tests/e2e/geo.spec.ts`** — **added** `legacy /mill redirects to /export` and
+  `legacy /foundry redirects to /generate`; OG path fixtures updated
+- **`tests/e2e/smoke.spec.ts`** — nav test asserts the full order and that `Browse` is inert
+  (matched via `[aria-disabled="true"]`, since it is not a link and `getByRole('link')` skips it)
+
+Verified: `typecheck` and `lint` clean; 46 Vitest and 21 Playwright tests passing; header rendering
+checked visually in both light and dark themes.
+
+### Deliberately out of scope
+
+- **`docs/`** — historical entries still say Foundry / Mill. Rewriting them would misreport what
+  actually shipped in 0.4.x–0.7.0.
+- **Component and module names** — `FoundryPlaceholderView`, `StudioView`, `millStage.ts`,
+  `MillStepIndicator.tsx`, and the `.mill-view` / `.mill-toolbar` CSS classes. Internal, with no
+  user-visible effect; `StudioView` was already stale, since it renders what was the Mill.
+- **Console stage bays** — still `source | build | review | export`.
+- **`package.json`** — `name` is still `fontgenerator` and `version` still `0.6.0`; both already
+  drifted from the repo name and this changelog before 0.8.0.
+
+### Known follow-ups
+
+- **`Generate` and `Export` now collide with in-console concepts.** `Generate (no agent)` is the
+  primary build button and `EXPORT` is the fourth stage bay. So the Export page contains an EXPORT
+  bay, and how-it-works reads "Drop A-KaminoDeco.png in the Export SOURCE bay and hit Generate" —
+  accurate, but "Generate" there means the button, not the nav item. Resolving this means renaming
+  either the bays or the nav.
+- **`Browse` has no affordance.** It renders muted and unclickable with no `Soon` badge, so nothing
+  signals why it does not respond. Either give it `badge="Soon"` (as `Generate` has) or a real page.
+- **Test counts in `geoPrerenderContent.json` are stale.** It declares `unitBrowser: 40, e2e: 13`,
+  which renders as "53 automated tests" in public copy; the real totals are 46 and 21 (67). The
+  drift predates 0.8.0 (0.7.0 added tests without updating the JSON) and widened by 3 here. The e2e
+  assertion cannot catch it, because it compares the rendered string against the same JSON that
+  produced it — the same class of drift 0.5.1 was created to eliminate.
 
 ---
 

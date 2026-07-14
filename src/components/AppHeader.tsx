@@ -1,4 +1,4 @@
-import { AppNavLink } from '@/components/AppNavLink'
+import { AppNavInert, AppNavLink } from '@/components/AppNavLink'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { useAppRoute } from '@/hooks/useAppRoute'
 import { navigate, routeHref } from '@/lib/navigation'
@@ -24,18 +24,20 @@ export function AppHeader() {
 
         <div className="flex shrink-0 items-center gap-2">
           <nav aria-label="Primary" className="nav-links">
-            <AppNavLink route="mill" active={route === 'mill'} />
+            <AppNavInert label="Browse" />
+            <AppNavLink route="generate" active={route === 'generate'} badge="Soon" muted />
+            <AppNavLink route="export" active={route === 'export'} />
             <AppNavLink route="how-it-works" active={route === 'how-it-works'} />
-            <AppNavLink route="foundry" active={route === 'foundry'} badge="Soon" muted />
           </nav>
           <ThemeToggle />
         </div>
       </div>
 
       <nav aria-label="Primary mobile" className="nav-mobile">
-        <AppNavLink route="mill" active={route === 'mill'} />
+        <AppNavInert label="Browse" />
+        <AppNavLink route="generate" active={route === 'generate'} badge="Soon" muted />
+        <AppNavLink route="export" active={route === 'export'} />
         <AppNavLink route="how-it-works" active={route === 'how-it-works'} />
-        <AppNavLink route="foundry" active={route === 'foundry'} badge="Soon" muted />
       </nav>
     </header>
   )

@@ -61,7 +61,7 @@ export const THREE_PATH_ROWS = [
 
 export const FONTFORGE_ROWS = [
   ['Runs in browser', 'Yes — WASM pipeline', 'Desktop install'],
-  ['PNG batch upload', 'Yes — Mill SOURCE bay', 'Manual per glyph'],
+  ['PNG batch upload', 'Yes — Export SOURCE bay', 'Manual per glyph'],
   ['Agent parameter tuning', 'Optional — BUILD bay', 'Manual sliders'],
   ['Recipe replay', 'Yes — pinned JSON preset', 'Manual presets'],
   ['Privacy', 'Conversion stays local', 'Local desktop'],

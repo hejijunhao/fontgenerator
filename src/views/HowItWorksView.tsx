@@ -16,7 +16,7 @@ export function HowItWorksView() {
       <header className="space-y-4 border-b border-border pb-6 pt-2">
         <p className="font-mono text-xs text-subtle">
           Last updated: {HOW_IT_WORKS_LAST_UPDATED} · Browser PNG-to-font pipeline, optional agent,
-          Foundry deferred
+          Generate deferred
         </p>
         <ol className="card-static max-w-prose list-decimal space-y-2 pl-5">
           {QUICK_ANSWER.map((line) => (
@@ -47,26 +47,26 @@ export function HowItWorksView() {
         <div className="grid gap-4 sm:grid-cols-2">
           <article className="card-inert space-y-3">
             <p className="section-eyebrow mb-0">
-              Foundry · <span className="badge badge-default normal-case tracking-normal">Soon</span>
+              Generate · <span className="badge badge-default normal-case tracking-normal">Soon</span>
             </p>
             <h2 className="card-title">Sketch letterforms first</h2>
             <p className="card-desc">
-              Agentic style exploration and glyph grids, then handoff to the Mill. Image generation is
+              Agentic style exploration and glyph grids, then handoff to Export. Image generation is
               not available yet — see the{' '}
-              <a href={routeHref('foundry')} className="font-medium text-ink underline-offset-2 hover:underline">
-                Foundry placeholder
+              <a href={routeHref('generate')} className="font-medium text-ink underline-offset-2 hover:underline">
+                Generate placeholder
               </a>{' '}
               for the planned workflow.
             </p>
           </article>
           <article className="card space-y-3">
-            <p className="section-eyebrow mb-0">Mill · Live</p>
+            <p className="section-eyebrow mb-0">Export · Live</p>
             <h2 className="card-title">Convert artwork to fonts</h2>
             <p className="card-desc">
               Upload PNG glyphs into the SOURCE bay, run preprocess → trace → place → build in the
               browser console, export TTF / WOFF2 from EXPORT.{' '}
-              <a href={routeHref('mill')} className="font-medium text-ink underline-offset-2 hover:underline">
-                Try the Mill with A-KaminoDeco.png
+              <a href={routeHref('export')} className="font-medium text-ink underline-offset-2 hover:underline">
+                Try Export with A-KaminoDeco.png
               </a>
               .
             </p>
@@ -192,8 +192,8 @@ export function HowItWorksView() {
           </p>
           <p>
             {TEST_COUNT_METHODOLOGY} Drop the same PNG in the{' '}
-            <a href={routeHref('mill')} className="font-medium text-ink underline-offset-2 hover:underline">
-              Mill
+            <a href={routeHref('export')} className="font-medium text-ink underline-offset-2 hover:underline">
+              Export console
             </a>{' '}
             to reproduce the reference build without an API key.
           </p>
@@ -214,12 +214,12 @@ export function HowItWorksView() {
           <div className="space-y-1">
             <p className="card-title">Ready to try the browser font pipeline?</p>
             <p className="card-desc">
-              Drop <span className="font-medium text-ink">A-KaminoDeco.png</span> in the Mill SOURCE bay
+              Drop <span className="font-medium text-ink">A-KaminoDeco.png</span> in the Export SOURCE bay
               and hit Generate. No API key required.
             </p>
           </div>
-          <a href={routeHref('mill')} className="btn btn-primary shrink-0">
-            Open Mill
+          <a href={routeHref('export')} className="btn btn-primary shrink-0">
+            Open Export
           </a>
         </div>
       </section>

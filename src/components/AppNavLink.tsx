@@ -39,3 +39,13 @@ export function AppNavLink({ route, active, badge, muted }: AppNavLinkProps) {
     </a>
   )
 }
+
+/** Nav entry with no route behind it yet. Inert: no href, not focusable, not clickable. */
+export function AppNavInert({ label, badge }: { label: string; badge?: string }) {
+  return (
+    <span aria-disabled="true" className="nav-link nav-link--muted">
+      {label}
+      {badge ? <span className="badge badge-default">{badge}</span> : null}
+    </span>
+  )
+}

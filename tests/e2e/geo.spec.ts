@@ -8,10 +8,10 @@ test.describe('GEO pillar', () => {
     }
   })
 
-  test('llms.txt lists Foundry under Deferred', async ({ request }) => {
+  test('llms.txt lists Generate under Deferred', async ({ request }) => {
     const text = await (await request.get('/llms.txt')).text()
     expect(text).toContain('## Deferred')
-    expect(text).toContain('/foundry')
+    expect(text).toContain('/generate')
   })
 
   test('prerendered how-it-works HTML contains FAQ answer and JSON-LD', async ({ request }) => {
@@ -43,9 +43,9 @@ test.describe('GEO pillar', () => {
   test('per-route og:image meta on client nav', async ({ page }) => {
     const cases = [
       { path: '/', image: '/og/landing.png' },
-      { path: '/mill', image: '/og/mill.png' },
+      { path: '/export', image: '/og/export.png' },
       { path: '/how-it-works', image: '/og/how-it-works.png' },
-      { path: '/foundry', image: '/og/foundry.png' },
+      { path: '/generate', image: '/og/generate.png' },
     ] as const
 
     for (const { path, image } of cases) {
@@ -64,17 +64,31 @@ test.describe('GEO pillar', () => {
   })
 
   test('OG images are served at 1200×630 paths', async ({ request }) => {
-    for (const path of ['/og/landing.png', '/og/how-it-works.png', '/og/mill.png', '/og/foundry.png']) {
+    for (const path of ['/og/landing.png', '/og/how-it-works.png', '/og/export.png', '/og/generate.png']) {
       const res = await request.get(path)
       expect(res.ok(), `${path} should return 200`).toBeTruthy()
       expect(res.headers()['content-type']).toMatch(/image\/png/)
     }
   })
 
-  test('legacy /studio redirects to /mill', async ({ page }) => {
+  test('legacy /studio redirects to /export', async ({ page }) => {
     await page.goto('/studio')
-    await expect(page).toHaveURL(/\/mill$/)
+    await expect(page).toHaveURL(/\/export$/)
     await expect(page.getByLabel('Drop PNG glyph images here')).toBeVisible()
+  })
+
+  test('legacy /mill redirects to /export', async ({ page }) => {
+    await page.goto('/mill')
+    await expect(page).toHaveURL(/\/export$/)
+    await expect(page.getByLabel('Drop PNG glyph images here')).toBeVisible()
+  })
+
+  test('legacy /foundry redirects to /generate', async ({ page }) => {
+    await page.goto('/foundry')
+    await expect(page).toHaveURL(/\/generate$/)
+    await expect(
+      page.locator('main h1', { hasText: /Generate — agentic glyph creation/i }),
+    ).toBeVisible()
   })
 
   test('unknown paths redirect to landing', async ({ page }) => {

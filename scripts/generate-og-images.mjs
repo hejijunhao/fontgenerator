@@ -124,7 +124,7 @@ function generateHowItWorks() {
   writeFileSync(path.join(ogDir, 'how-it-works.png'), canvas.toBuffer('image/png'))
 }
 
-function generateMill() {
+function generateExport() {
   const canvas = createCanvas(W, H)
   const ctx = canvas.getContext('2d')
   const palette = { bg: '#0d0c0b', ink: '#eceae6', muted: '#9a9894', hairline: '#2a2927', panel: '#161514' }
@@ -134,7 +134,7 @@ function generateMill() {
 
   ctx.fillStyle = palette.ink
   ctx.font = '600 28px Inter, system-ui, sans-serif'
-  ctx.fillText('GLYPHMILL · MILL', 64, 72)
+  ctx.fillText('GLYPHMILL · EXPORT', 64, 72)
 
   ctx.font = '600 52px Inter, system-ui, sans-serif'
   ctx.fillText('Console font mill', 64, 150)
@@ -157,10 +157,10 @@ function generateMill() {
     ctx.fillText(label, x + 16, y + 32)
   })
 
-  writeFileSync(path.join(ogDir, 'mill.png'), canvas.toBuffer('image/png'))
+  writeFileSync(path.join(ogDir, 'export.png'), canvas.toBuffer('image/png'))
 }
 
-function generateFoundry() {
+function generateGenerate() {
   const canvas = createCanvas(W, H)
   const ctx = canvas.getContext('2d')
   const palette = { bg: '#f6f5f0', ink: '#1a1a18', muted: '#6b6a66', hairline: '#c8c6be' }
@@ -185,18 +185,18 @@ function generateFoundry() {
 
   ctx.fillStyle = palette.ink
   ctx.font = '600 52px Inter, system-ui, sans-serif'
-  ctx.fillText('Foundry — coming soon', 96, 220)
+  ctx.fillText('Generate — coming soon', 96, 220)
 
   ctx.fillStyle = palette.muted
   ctx.font = '400 26px Inter, system-ui, sans-serif'
-  ctx.fillText('Agentic glyph creation. Use the Mill today.', 96, 280)
+  ctx.fillText('Agentic glyph creation. Use Export today.', 96, 280)
 
-  writeFileSync(path.join(ogDir, 'foundry.png'), canvas.toBuffer('image/png'))
+  writeFileSync(path.join(ogDir, 'generate.png'), canvas.toBuffer('image/png'))
 }
 
 await generateLanding()
 generateHowItWorks()
-generateMill()
-generateFoundry()
+generateExport()
+generateGenerate()
 
 console.log('generate-og-images: wrote public/og/*.png (1200×630)')

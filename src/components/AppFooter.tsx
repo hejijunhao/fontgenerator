@@ -15,8 +15,8 @@ export function AppFooter() {
           </a>
         </p>
         <nav aria-label="Footer" className="flex flex-wrap items-center gap-2">
-          <AppNavLink route="foundry" active={route === 'foundry'} badge="Soon" muted />
-          <AppNavLink route="mill" active={route === 'mill'} />
+          <AppNavLink route="generate" active={route === 'generate'} badge="Soon" muted />
+          <AppNavLink route="export" active={route === 'export'} />
           <AppNavLink route="how-it-works" active={route === 'how-it-works'} />
         </nav>
       </div>

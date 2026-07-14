@@ -24,9 +24,9 @@ function App() {
 
       <PageShell route={route}>
         {route === 'landing' && <LandingView />}
-        {route === 'mill' && <StudioView />}
+        {route === 'export' && <StudioView />}
         {route === 'how-it-works' && <HowItWorksView />}
-        {route === 'foundry' && <FoundryPlaceholderView />}
+        {route === 'generate' && <FoundryPlaceholderView />}
         <AppFooter />
       </PageShell>
     </div>

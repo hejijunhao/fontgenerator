@@ -1,9 +1,9 @@
-export type AppRoute = 'landing' | 'foundry' | 'mill' | 'how-it-works'
+export type AppRoute = 'landing' | 'generate' | 'export' | 'how-it-works'
 
 const ROUTE_PATHS: Record<AppRoute, string> = {
   landing: '/',
-  foundry: '/foundry',
-  mill: '/mill',
+  generate: '/generate',
+  export: '/export',
   'how-it-works': '/how-it-works',
 }
 
@@ -19,7 +19,9 @@ export function parsePath(pathname: string): AppRoute {
 
 /** Legacy v0.x paths that should redirect to a canonical route. */
 const LEGACY_PATH_REDIRECTS: Record<string, AppRoute> = {
-  '/studio': 'mill',
+  '/studio': 'export',
+  '/mill': 'export',
+  '/foundry': 'generate',
 }
 
 /**
@@ -38,7 +40,7 @@ export function resolvePathRedirect(pathname: string): string | null {
 export function parseLegacyHash(hash: string): AppRoute | null {
   if (!hash.startsWith('#')) return null
   const stripped = hash.slice(1)
-  if (stripped === '' || stripped === '/') return 'mill'
+  if (stripped === '' || stripped === '/') return 'export'
   if (stripped === '/how-it-works' || stripped === 'how-it-works') return 'how-it-works'
   return null
 }
@@ -51,10 +53,10 @@ export function routeLabel(route: AppRoute): string {
   switch (route) {
     case 'landing':
       return 'Home'
-    case 'foundry':
-      return 'Foundry'
-    case 'mill':
-      return 'Mill'
+    case 'generate':
+      return 'Generate'
+    case 'export':
+      return 'Export'
     case 'how-it-works':
       return 'How it works'
   }

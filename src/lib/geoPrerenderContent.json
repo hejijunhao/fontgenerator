@@ -7,19 +7,19 @@
     "Glyphmill converts PNG letter images into installable TTF and WOFF2 fonts.",
     "The conversion pipeline runs entirely in your browser via WASM.",
     "An optional Claude agent tunes trace parameters; a free no-agent path exists.",
-    "Foundry — agentic glyph creation — is coming soon.",
+    "Generate — agentic glyph creation — is coming soon.",
     "No accounts, no uploads of source PNGs for conversion."
   ],
   "quickAnswer": [
     "Glyphmill converts PNG letter images into installable TTF and WOFF2 fonts in your browser.",
     "Preprocess, trace, place, build, and export run locally in WASM; only optional agent QA previews use a stateless proxy.",
     "Three build paths: Generate (no agent, free), Run agent (OpenRouter), or Replay recipe (free, zero model calls).",
-    "Foundry — agentic glyph creation — is coming soon; the Mill console is live today at /mill."
+    "Generate — agentic glyph creation — is coming soon; the Export console is live today at /export."
   ],
   "howToSteps": [
     {
       "name": "Upload PNG letter images",
-      "text": "Open the Mill at /mill and drop one or more PNG glyphs into the SOURCE bay."
+      "text": "Open Export at /export and drop one or more PNG glyphs into the SOURCE bay."
     },
     {
       "name": "Generate a font",
@@ -33,7 +33,7 @@
   "faq": [
     {
       "q": "How do I make a font from images without FontForge?",
-      "a": "Open the Mill at /mill, upload PNG letter images, and run Generate (no agent). Glyphmill preprocesses each PNG, traces it with Potrace WASM, places the vector on a baseline, and builds a TTF with opentype.js — all in your browser. Download TTF or WOFF2 from the EXPORT bay. No desktop install, no accounts, and no upload of source PNGs for conversion. Try A-KaminoDeco.png from the repo as a one-file demo."
+      "a": "Open Export at /export, upload PNG letter images, and run Generate (no agent). Glyphmill preprocesses each PNG, traces it with Potrace WASM, places the vector on a baseline, and builds a TTF with opentype.js — all in your browser. Download TTF or WOFF2 from the EXPORT bay. No desktop install, no accounts, and no upload of source PNGs for conversion. Try A-KaminoDeco.png from the repo as a one-file demo."
     },
     {
       "q": "Does Glyphmill use AI to generate letter shapes?",
@@ -68,16 +68,16 @@
       "a": "TTF as the master outline font, WOFF2 compressed for web use, and a zip with both plus a stub WOFF passthrough until a WASM WOFF1 encoder lands. All built client-side in the EXPORT bay. Round-trip parse validation runs on the TTF before download. Install the TTF on desktop systems or serve WOFF2 from your site — no cloud conversion step."
     },
     {
-      "q": "How does the Mill console workflow work?",
-      "a": "The Mill at /mill uses four staged instrument bays: SOURCE for PNG upload and glyph grid, BUILD for generate/agent actions and gates, REVIEW for preview and warnings, EXPORT for downloads and recipe copy. A step indicator tracks Source, Build, Review, Export. Mono readouts carry metrics and log lines; prose stays in IBM Plex Sans. The console uses a scoped dark surface on /mill without changing your Monument theme preference, and loads about 1.2 MB of WASM on first visit."
+      "q": "How does the Export console workflow work?",
+      "a": "Export at /export uses four staged instrument bays: SOURCE for PNG upload and glyph grid, BUILD for generate/agent actions and gates, REVIEW for preview and warnings, EXPORT for downloads and recipe copy. A step indicator tracks Source, Build, Review, Export. Mono readouts carry metrics and log lines; prose stays in IBM Plex Sans. The console uses a scoped dark surface on /export without changing your Monument theme preference, and loads about 1.2 MB of WASM on first visit."
     },
     {
-      "q": "What is the Foundry chamber?",
-      "a": "Foundry is the planned sketch chamber — describe a letter style, explore glyph variations with an agent, then hand artwork to the Mill. Image generation and Foundry tooling are not wired yet; /foundry shows an honest placeholder with hatched inert styling. The Mill is live today for PNG-to-font conversion. Glyphmill is a two-chamber workshop even while Foundry is deferred."
+      "q": "What is the Generate chamber?",
+      "a": "Generate is the planned sketch chamber — describe a letter style, explore glyph variations with an agent, then hand artwork to Export. Image generation and Generate tooling are not wired yet; /generate shows an honest placeholder with hatched inert styling. Export is live today for PNG-to-font conversion. Glyphmill is a two-chamber workshop even while Generate is deferred."
     },
     {
       "q": "What are Glyphmill's honest limitations?",
-      "a": "Agent mode is single-glyph today — batch via no-agent or replay. Potrace WASM uses library defaults; trace params are recorded in recipes but not all are tunable at runtime yet. WOFF export is a stub. First load pulls about 1.2 MB of WASM (wawoff2). Foundry image generation is deferred. These are engineering tradeoffs documented in the Mill UI and this page — not roadmap fiction."
+      "a": "Agent mode is single-glyph today — batch via no-agent or replay. Potrace WASM uses library defaults; trace params are recorded in recipes but not all are tunable at runtime yet. WOFF export is a stub. First load pulls about 1.2 MB of WASM (wawoff2). Image generation in Generate is deferred. These are engineering tradeoffs documented in the Export UI and this page — not roadmap fiction."
     }
   ]
 }

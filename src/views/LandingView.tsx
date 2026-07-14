@@ -5,7 +5,7 @@ import { routeHref } from '@/lib/navigation'
 const LANDING_QUICK_ANSWER = geoContent.landingQuickAnswer
 
 const HOW_TO_STEPS = [
-  { step: '1', title: 'Upload', body: 'Drop one or more PNG letter images into the Mill.' },
+  { step: '1', title: 'Upload', body: 'Drop one or more PNG letter images into Export.' },
   { step: '2', title: 'Generate', body: 'Run the pipeline — no agent, agent, or recipe replay.' },
   { step: '3', title: 'Download', body: 'Export TTF, WOFF2, or a zip bundle. Install or use on the web.' },
 ] as const
@@ -78,12 +78,12 @@ export function LandingView() {
               Glyphmill is a browser tool that converts PNG letter images into installable fonts.
             </h1>
             <p className="hero-desc">
-              Drop letter art into the Mill, trace it to vectors, assemble a real typeface, and
+              Drop letter art into Export, trace it to vectors, assemble a real typeface, and
               download TTF or WOFF2 — without FontForge and without uploading your artwork for
               conversion.
             </p>
             <div className="relative z-[1] flex flex-wrap items-center gap-4">
-              <a href={routeHref('mill')} className="btn btn-primary">
+              <a href={routeHref('export')} className="btn btn-primary">
                 Try with sample letter A
               </a>
               <a href={routeHref('how-it-works')} className="btn btn-ghost">
@@ -154,28 +154,28 @@ export function LandingView() {
           id="chambers-heading"
           kicker="Platform"
           title="Two chambers"
-          lead="Sketch in the Foundry (coming soon). Convert in the Mill (live today)."
+          lead="Sketch in Generate (coming soon). Convert in Export (live today)."
         />
         <div className="grid gap-4 sm:grid-cols-2">
           <article className="card space-y-3">
-            <p className="section-eyebrow mb-0">Mill · Live</p>
+            <p className="section-eyebrow mb-0">Export · Live</p>
             <h3 className="card-title">Convert artwork to fonts</h3>
             <p className="card-desc">
               Upload PNG glyphs, run preprocess → trace → place → build, export TTF / WOFF2.
             </p>
-            <a href={routeHref('mill')} className="btn btn-ghost inline-flex !px-0">
-              Open Mill →
+            <a href={routeHref('export')} className="btn btn-ghost inline-flex !px-0">
+              Open Export →
             </a>
           </article>
           <article className="card-inert space-y-3">
             <p className="section-eyebrow mb-0">
-              Foundry · <span className="badge badge-default normal-case tracking-normal">Soon</span>
+              Generate · <span className="badge badge-default normal-case tracking-normal">Soon</span>
             </p>
             <h3 className="card-title">Sketch letterforms first</h3>
             <p className="card-desc">
-              Agentic style exploration and glyph grids, then handoff to the Mill. Not available yet.
+              Agentic style exploration and glyph grids, then handoff to Export. Not available yet.
             </p>
-            <a href={routeHref('foundry')} className="btn btn-ghost inline-flex !px-0">
+            <a href={routeHref('generate')} className="btn btn-ghost inline-flex !px-0">
               See planned workflow →
             </a>
           </article>
@@ -221,7 +221,7 @@ export function LandingView() {
           id="howto-heading"
           kicker="Workflow"
           title="Three steps"
-          lead="From PNG art to installable font files in the Mill console."
+          lead="From PNG art to installable font files in the Export console."
         />
         <ol className="grid-2-plus-1">
           {HOW_TO_STEPS.map((item) => (
@@ -245,11 +245,11 @@ export function LandingView() {
               Ready to mill a font?
             </h2>
             <p className="card-desc">
-              Drop <span className="font-medium text-ink">A-KaminoDeco.png</span> in the Mill and hit
+              Drop <span className="font-medium text-ink">A-KaminoDeco.png</span> in Export and hit
               Generate. No API key required.
             </p>
           </div>
-          <a href={routeHref('mill')} className="btn btn-primary shrink-0">
+          <a href={routeHref('export')} className="btn btn-primary shrink-0">
             Try with sample letter A
           </a>
         </div>

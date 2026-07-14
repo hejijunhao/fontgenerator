@@ -36,7 +36,7 @@ function landingGraph() {
         },
         description:
           'Browser-native tool that converts PNG letter images into installable TTF and WOFF2 fonts using client-side WASM.',
-        url: absoluteUrl('/mill'),
+        url: absoluteUrl('/export'),
       },
     ],
   }
@@ -78,14 +78,14 @@ function howItWorksGraph() {
         },
         description:
           'Browser-native tool that converts PNG letter images into installable TTF and WOFF2 fonts using client-side WASM.',
-        url: absoluteUrl('/mill'),
+        url: absoluteUrl('/export'),
       },
       {
         '@type': 'HowTo',
         '@id': `${origin}/how-it-works#howto`,
         name: 'Convert PNG letter images to a font in Glyphmill',
         description:
-          'Upload PNG glyphs to the Mill, run the browser pipeline, and download TTF or WOFF2.',
+          'Upload PNG glyphs to Export, run the browser pipeline, and download TTF or WOFF2.',
         step: HOW_TO_STEPS.map((step, index) => ({
           '@type': 'HowToStep',
           position: index + 1,

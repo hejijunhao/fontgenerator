@@ -72,7 +72,7 @@ function landingJsonLd() {
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
         description:
           'Browser-native tool that converts PNG letter images into installable TTF and WOFF2 fonts using client-side WASM.',
-        url: absoluteUrl('/mill'),
+        url: absoluteUrl('/export'),
       },
     ],
   }
@@ -104,14 +104,14 @@ function howItWorksJsonLd() {
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
         description:
           'Browser-native tool that converts PNG letter images into installable TTF and WOFF2 fonts using client-side WASM.',
-        url: absoluteUrl('/mill'),
+        url: absoluteUrl('/export'),
       },
       {
         '@type': 'HowTo',
         '@id': `${siteUrl}/how-it-works#howto`,
         name: 'Convert PNG letter images to a font in Glyphmill',
         description:
-          'Upload PNG glyphs to the Mill, run the browser pipeline, and download TTF or WOFF2.',
+          'Upload PNG glyphs to Export, run the browser pipeline, and download TTF or WOFF2.',
         step: geo.howToSteps.map((step, index) => ({
           '@type': 'HowToStep',
           position: index + 1,
@@ -148,8 +148,8 @@ function writeSitemap() {
   const routes = [
     { path: '/', changefreq: 'weekly', priority: '1.0' },
     { path: '/how-it-works', changefreq: 'monthly', priority: '0.9' },
-    { path: '/mill', changefreq: 'weekly', priority: '0.9' },
-    { path: '/foundry', changefreq: 'monthly', priority: '0.5' },
+    { path: '/export', changefreq: 'weekly', priority: '0.9' },
+    { path: '/generate', changefreq: 'monthly', priority: '0.5' },
   ]
   const lastmod = '2026-07-02'
   const urls = routes

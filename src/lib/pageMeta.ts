@@ -31,21 +31,21 @@ const PAGE_META: Record<AppRoute, PageMeta> = {
     path: '/',
     ogImage: '/og/landing.png',
   },
-  foundry: {
-    title: 'Foundry — agentic glyph creation (coming soon)',
+  generate: {
+    title: 'Generate — agentic glyph creation (coming soon)',
     description:
-      'Glyphmill Foundry will let you sketch letterforms with an agent before milling them into fonts. Use the Mill today for PNG-to-font conversion.',
+      'Glyphmill Generate will let you sketch letterforms with an agent before milling them into fonts. Use Export today for PNG-to-font conversion.',
     ogType: 'website',
-    path: '/foundry',
-    ogImage: '/og/foundry.png',
+    path: '/generate',
+    ogImage: '/og/generate.png',
   },
-  mill: {
-    title: 'Mill — convert PNG glyphs to TTF / WOFF2',
+  export: {
+    title: 'Export — convert PNG glyphs to TTF / WOFF2',
     description:
-      'Upload PNG letter images, run the browser font pipeline, and download TTF, WOFF2, or a zip. Generate free with a pinned recipe or use the optional agent.',
+      'Upload PNG letter images, run the browser font pipeline, and download TTF, WOFF2, or a zip. Build free with a pinned recipe or use the optional agent.',
     ogType: 'website',
-    path: '/mill',
-    ogImage: '/og/mill.png',
+    path: '/export',
+    ogImage: '/og/export.png',
   },
   'how-it-works': {
     title: 'How Glyphmill turns PNG images into fonts',
